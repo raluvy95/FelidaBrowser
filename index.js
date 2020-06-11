@@ -1,5 +1,4 @@
 const {app, BrowserWindow} = require("electron")
-require("dotenv").config()
 //const tab = require("./Class/Tab.js")
 //const Tab = new tab()
 const win = require("./windows/window.js")

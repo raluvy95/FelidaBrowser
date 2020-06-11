@@ -1,0 +1,22 @@
+{
+  "name": "felida_browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron-context-menu": "^2.0.1",
+    "electron-tabs": "^0.15.0",
+    "node-fetch": "^2.6.0",
+    "remote": "^0.2.6"
+  },
+  "nodemonConfig": {
+    "delay": "1000",
+    "ext": "js, ejs, json"
+  }
+}

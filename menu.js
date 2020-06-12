@@ -1,5 +1,5 @@
 const { app, Menu, clipboard } = require("electron");
-
+const newwin = require("./windows/window.js")
 function yes(win) {
 const isMac = process.platform === "darwin";
 const template = [
@@ -11,7 +11,9 @@ const template = [
     {role: "minimize"},
 	{
 		label: "New Window",
-	    role: "open"
+	    click: () => {
+			newwin()
+		}
      },
      {
          label: "Copy URL",
@@ -19,17 +21,23 @@ const template = [
              if(clipboard.has(win.webContents.getURL())) return;
              clipboard.writeText(win.webContents.getURL());
          }
-     }
+     },
+	 {
+		 label: "Settings",
+		 click: () => {
+			 win.emit('settings')
+		 }
+	 }
 	],
   },
   {
-    label: "Back",
+    label: "<",
     click: () => {
         win.emit('app-command', "z", "browser-backward")
     }
   },
   {
-    label: "Front",
+    label: ">",
     click: () => {
         win.emit('app-command', "z", "browser-forward")
     }
@@ -40,9 +48,15 @@ const template = [
         { 
             label: "Search an URL adress",
             click: () => {
-                win.emit('app-command', 'z', 'search')
+                win.emit('sendPrompt')
             }
-        }
+        },
+		{
+			label: "Find in page",
+			click: () => {
+				win.emit("finding")
+			}
+		}
     ]
    },
    {
@@ -65,7 +79,13 @@ const template = [
             click: () => {
                 win.loadURL("https://stackoverflow.com")
             }
-        }
+        },
+		{
+			label: "DuckDuckGo",
+			click: () => {
+				win.loadURL("https://duckduckgo.com")
+			}
+		}
        ]
    },
    {

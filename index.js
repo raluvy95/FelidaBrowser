@@ -1,6 +1,4 @@
 const {app, BrowserWindow} = require("electron")
-//const tab = require("./Class/Tab.js")
-//const Tab = new tab()
 const win = require("./windows/window.js")
 
 app.on('ready', function() {

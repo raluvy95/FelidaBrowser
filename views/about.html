@@ -39,12 +39,28 @@
   </style>
   </head>
   <body>
-  <script>
+  	<div id="title-bar">
+        <div id="title"></div>
+           <div id="title-bar-btns">
+              <button id="close-btn">x</button>
+             </div>
+        </div>
+	</div>
+    <h1>Felida Browser</h1>
+	<img src="./../icon.png" width="100" height="100" align=left>
+	<p>
+	    Version: <span id="felida"></span><br>
+	    Chrome: <span id="chrome"></span><br>
+		Electron: <span id="electron"></span><br>
+		Node.JS: <span id="node"></span>
+	</p>
+	<script>
   (function () {
      function init() { 
-          const {BrowserWindow} = require("electron")
+          const {remote} = require("electron")
           document.getElementById("close-btn").addEventListener("click", function (e) {
-               pag.close();
+		      var window = remote.getCurrentWindow()
+              window.close()
           }); 
      }; 
 
@@ -53,17 +69,19 @@
                init(); 
           }
      };
-
+     
+	function getversions() {
+	   const f = require('electron').remote.app.getVersion();
+	   const c = process.versions.chrome
+	   const e = process.versions.electron 
+	   const n = process.versions.node
+	   document.getElementById("felida").innerHTML = f 
+	   document.getElementById("chrome").innerHTML = c 
+	   document.getElementById("electron").innerHTML = e 
+	   document.getElementById("node").innerHTML = n
+	}
+	getversions()
 })();
   </script>
-  	<div id="title-bar">
-        <div id="title">Felida Browser</div>
-           <div id="title-bar-btns">
-              <button id="close-btn">x</button>
-             </div>
-        </div>
-	</div>
-    <h1>Felida Browser</h1>
-	<img src="./../icon.png" width="100" height="100" align=left>
   </body>
 </html>

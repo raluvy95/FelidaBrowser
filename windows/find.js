@@ -8,7 +8,7 @@ const y = () => {
         width: 500,
         height: 250
     })
-    win.loadURL("file:///" + __dirname + "./../views/about.html")
+    win.loadURL("file:///" + __dirname + "./../views/find.html")
     win.once("ready-to-show", () => {
         win.show()
         win.focus()

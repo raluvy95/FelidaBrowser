@@ -11,29 +11,39 @@
             font-size: 20px;
             color: white;
             text-align: center;
-			 padding: 0px;
+			padding: 0px;
             margin: 0px; 
+			background-image: url("https://image.freepik.com/free-vector/mountain-with-night-purple-sky-background_18047-35.jpg");
+			background-repeat: no-repeat;
+			background-position: center;
+			height: 100%;
+			background-size: cover;
          }
 		a {
 		  text-decoration: none;
-		  color: #b70ac8;
+		  color: #f694ff;
 		}
-		#title-bar {
- -webkit-app-region: drag;
- height: 24px; 
- background-color: darkviolet;
- padding: none;
- margin: 0px; 
-}
+		.small {
+		    position:absolute;
+            bottom: 5px;
+            right:0;
+			margin: 10px;
+		}
+		.cool {
+		     box-shadow: 0px 0px 17px 6px rgba(0,0,0,0.75);
+			 border-radius: 50%;
+		}
      </style>
     </head>
     <body>
         <div id="nav-head"></div>
         <h1>Felida Browser</h1>
         <p>Welcome to the browser!</p>
-        <img src="./../icon.png" width="200px" height="200px"><br><br><br><br>
-        <p>Felida Browser is a lightweight Chromium browser using <a href="https://electronjs.org">ElectronJS</a></p><br>
-        <input type="text" id="search">
-		<p>Made by <a href="https://youtube.com/catnowblue">CatNowBlue</a> • Fork me on <a href="https://github.com/raluvy95/FelidaBrowser">GitHub!</a><p>
+        <img src="./../icon.png" width="200px" height="200px" class="cool"><br><br><br><br>
+        <p>Felida Browser is a lightweight Chromium browser using <a href="https://electronjs.org">ElectronJS</a></p><br><br><br>
+		<p>Made by <a href="https://youtube.com/catnowblue">CatNowBlue</a> • Fork me on <a href="https://github.com/raluvy95/felidabrowser">GitHub!</a><p>
+		<footer class="small">Source: <a href="https://www.freepik.com/premium-vector/mountain-with-night-purple-sky-background_1844324.htm">this</a></footer>
+      <script>
+      </script>
     </body>
 </html>

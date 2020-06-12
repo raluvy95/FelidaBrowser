@@ -1,0 +1,27 @@
+{
+  "name": "felida_browser",
+  "version": "0.1.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cliqz/adblocker-electron": "^1.16.0",
+    "cross-fetch": "^3.0.4",
+    "electron-context-menu": "^2.0.1",
+    "electron-prompt": "^1.5.1",
+    "electron-tabs": "^0.15.0",
+    "jquery": "^3.5.1",
+    "node-fetch": "^2.6.0",
+    "remote": "^0.2.6",
+    "smalltalk": "^4.0.6"
+  },
+  "nodemonConfig": {
+    "delay": "1000",
+    "ext": "js, ejs, json"
+  }
+}

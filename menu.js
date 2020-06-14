@@ -46,7 +46,7 @@ const template = [
     label: "Search",
     submenu: [
         { 
-            label: "Search an URL adress",
+            label: "Search an URL or via Google",
             click: () => {
                 win.emit('sendPrompt')
             }
@@ -85,7 +85,13 @@ const template = [
 			click: () => {
 				win.loadURL("https://duckduckgo.com")
 			}
-		}
+        },
+        {
+            label: "From local network",
+            click: () => {
+                win.emit("localhost")
+            }
+        }
        ]
    },
    {

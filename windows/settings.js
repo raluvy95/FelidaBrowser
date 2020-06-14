@@ -3,7 +3,8 @@ const settings = require("./../settings.json")
  function f() {
     let win = new BrowserWindow({
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            enableRemoteModule: true
         },
         frame: false
     })

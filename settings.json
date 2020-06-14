@@ -1,7 +1,7 @@
  {
      "adblock": {
          "enable": true,
-         "ignoreWeb": []
+         "ignoreWeb": ["https://www.google.com"]
      },
      "darkmode": true
  }

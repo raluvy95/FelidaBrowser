@@ -14,4 +14,4 @@ The browser's system requirements is same as Electron.js, so here's a [full syst
 | 7 and later | 10.10 (Yosemite) | Ubuntu 12.04<br>Fedora 21<br>Debian 8 |
 
 # Notes
-This browser is in BETA. If you really want to test it, please clone this respostory, install `npm i -g electron` and run using the command `electron .`<br>
+This browser is in BETA. If you really want to test it, please clone this respostory, install `npm i && npm i -g electron` and run using the command `electron .`<br>

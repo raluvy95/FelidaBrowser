@@ -65,9 +65,9 @@ const createWindow = async (child) => {
     win.maximize()
     win.loadURL('file://' + __dirname + '/../views/index.html')
 	let blocker
-	if(settings.adblock.enable) {
-		blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch)
-    }
+	//if(settings.adblock.enable) {
+	blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch)
+    //}
     win.on('app-command', (e, cmd, query) => {
         if (cmd === 'browser-backward' && win.webContents.canGoBack()) {
             win.webContents.goBack()
@@ -89,11 +89,13 @@ const createWindow = async (child) => {
     win.webContents.on('did-finish-load', async () => {
 	    const url = win.webContents.getURL()
         const title = win.webContents.getTitle()
-		if(settings.adblock.ignoreWeb.find(m => m.includes(url))) {
-                blocker.disableBlockingInSession(session.defaultSession)
-        } else {
-                blocker.enableBlockingInSession(session.defaultSession);
-        }
+        if(settings.adblock.enable) {
+			if(settings.adblock.ignoreWeb.find(m => m.includes(url))) {
+		            blocker.disableBlockingInSession(session.defaultSession)
+		    } else {
+		            blocker.enableBlockingInSession(session.defaultSession);
+		    }
+		}
         if(title == "Felida Browser") {
             win.setTitle("Felida Browser")
 		} else {

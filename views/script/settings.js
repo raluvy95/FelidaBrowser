@@ -1,5 +1,24 @@
 const settings = require("./../settings.json")
 const fs = require("fs")
+const path = require("path")
+
+/* load */
+function load()
+{
+	document.getElementById("aden").checked = settings.adblock.enable;
+	refreshIgnoreWeb();
+}
+
+window.addEventListener('load', load())
+
+function refreshIgnoreWeb()
+{
+    if(settings.adblock.ignoreWeb.length > 0)
+        document.getElementById("adig").setAttribute("value", settings.adblock.ignoreWeb.join(", "))
+    else
+        document.getElementById("adig").setAttribute("value", '')
+}
+
 function clear() {
     const {remote} = require("electron")
     const cleaning = remote.getCurrentWebContents().session
@@ -14,21 +33,17 @@ document.getElementById("close").addEventListener("click", () => {
     win.close()
 })
 document.getElementById("aden").addEventListener("click", () => {
-    settings.adblock.enable = false
-    fs.writeFileSync(__dirname + "/../../settings.json", settings)
+    settings.adblock.enable = document.getElementById("aden").checked
+    fs.writeFileSync(path.join(__dirname, "/../settings.json"), JSON.stringify(settings))
+    refreshIgnoreWeb()
 })
-if(settings.adblock.enable) {
-    document.getElementById("aden").setAttribute("checked", '')
-    if(settings.adblock.ignoreWeb.length > 0) {
-        document.getElementById("adig").setAttribute("value", settings.adblock.ignoreWeb.join(", "))
-    }
-}
+
 document.getElementsByTagName("body")[0].addEventListener("unload", () => {
     const modify = document.getElementById("adig").getAttribute("value")
     if(!modify) return
     else {
         settings.adblock.ignoreWeb = modify.split(", ")
-        fs.writeFileSync(__dirname + "/../../settings.json", settings)
+        fs.writeFileSync(path.join(__dirname, "/../settings.json"), JSON.stringify(settings))
     }
 })
 

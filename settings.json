@@ -1,7 +1,1 @@
- {
-     "adblock": {
-         "enable": true,
-         "ignoreWeb": ["https://www.google.com"]
-     },
-     "darkmode": true
- }
+{"adblock":{"enable":false,"ignoreWeb":["https://www.google.com"]},"darkmode":true}

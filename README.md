@@ -1,5 +1,5 @@
 
-<img align="center" width="250" height="250" src="https://raw.githubusercontent.com/raluvy95/FelidaBrowser/master/icon.png" alt="Resume application project app icon"><br><br>
+<img align="center" width="250" height="250" src="https://raw.githubusercontent.com/raluvy95/FelidaBrowser/master/assets/icon.png" alt="Felida icon"><br><br>
 # FelidaBrowser 
 A lightweight Chromium Browser using Electron.js!<br>
 

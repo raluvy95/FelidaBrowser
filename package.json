@@ -1,6 +1,6 @@
 {
   "name": "felida_browser",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,18 +12,25 @@
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.16.0",
     "cross-fetch": "^3.0.4",
+    "electron": "^11.1.1",
     "electron-context-menu": "^2.0.1",
     "electron-prompt": "^1.5.1",
     "electron-tabs": "^0.15.0",
+    "fresh": "^0.5.2",
+    "http-proxy": "^1.18.1",
     "jquery": "^3.5.1",
+    "lodash": "^4.17.20",
+    "mime": "^2.4.7",
     "node-fetch": "^2.6.0",
     "node-notifier": "^8.0.1",
     "prettysize": "^2.0.0",
     "remote": "^0.2.6",
+    "send": "^0.17.1",
     "smalltalk": "^4.0.6"
   },
   "nodemonConfig": {
     "delay": "1000",
     "ext": "js, ejs, json"
-  }
+  },
+  "devDependencies": {}
 }

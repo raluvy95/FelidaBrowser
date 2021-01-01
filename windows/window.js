@@ -16,7 +16,7 @@ const createWindow = async (child) => {
             preload: "preload.js",
         },
         title: "Felida Browser",
-        icon: __dirname + "/../icon.png",
+        icon: __dirname + "/../assets/icon.png",
         show: false,
   //      backgroundColor: settings.darkmode ? "#242424" : "#FFF" 
     })
@@ -108,7 +108,7 @@ const createWindow = async (child) => {
            label: 'URL or query',
            type: 'input',
            value: "https://example.org",
-           icon: __dirname + "/../icon.png"
+           icon: __dirname + "/../assets/icon.png"
         })
         .then((r) => {
             if(r === null) {
@@ -129,7 +129,7 @@ const createWindow = async (child) => {
             title: "Local Network",
             type: 'input',
             label: "Please type port to connect to localhost",
-            icon: __dirname + "/../icon.png"
+            icon: __dirname + "/../assets/icon.png"
         }).then(r => {
             if(!r) return 
             else {
@@ -154,7 +154,7 @@ const createWindow = async (child) => {
 		prompt({
             title: "Find",
             type: "input",
-            icon: `${__dirname}/../icon.png`
+            icon: `${__dirname}/../assets/icon.png`
         }).then(r => {
             if(r == null) return
             else {
@@ -195,7 +195,7 @@ const createWindow = async (child) => {
 				n.notify({
 	               title: "Download Completed",
 	               message: "You downloaded a item! The name of file is " + item.getFilename(),
-	               icon: path.join(__dirname, './../icon.png'),
+	               icon: path.join(__dirname, './../assets/icon.png'),
 	               sound: true,
 	               wait: false,
 	               appID: "Felida Browser"
@@ -207,7 +207,7 @@ const createWindow = async (child) => {
                 n.notify({
                     title: "Download Failed",
                     message: state == "interrupted" ? "The item you downlaoded is interrupted and cannot be resume" : state == "cancelled" ? "The item your downloaded is cancelled": "Unexpected Error.",
-                    icon: path.join(__dirname, './../icon.png'),
+                    icon: path.join(__dirname, './../assets/icon.png'),
                     sound: true,
                     wait: false,
                     appID: "Felida Browser"

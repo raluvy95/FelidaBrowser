@@ -1,12 +1,21 @@
 
-<p align="center"><img width="250" height="250" src="https://raw.githubusercontent.com/raluvy95/FelidaBrowser/master/assets/icon.png" alt="Felida icon"></p><br><br>
+# You selected REWRITE branch
+
+<p align="center"><img width="250" height="250" src="https://raw.githubusercontent.com/raluvy95/FelidaBrowser/tree/rewrite/assets/icon.png" alt="Felida icon"></p><br><br>
 
 # FelidaBrowser 
 A lightweight Chromium Browser using Electron.js!<br>
 
 # Features
+  - #### Multiple tabs support
+
+# TODO
   - #### Adblock build-in
-  - #### Less RAM usage than Google Chrome and other Chromium browsers (You may clean the cache)
+  - #### Better tabs style
+  - #### Black theme on all websites
+  - #### Settings subpage
+  - #### Browsing history
+  - #### Bookmarks
 
 # System Requirements
 The browser's system requirements is same as Electron.js, so here's a [full system requirements](https://stackoverflow.com/questions/36306450/what-is-minimum-system-requirements-to-run-electron-apps)

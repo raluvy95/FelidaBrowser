@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<style>
+			p
+			{
+				display: inline-block;
+			}
+		</style>
+		<script>
+			const { ipcRenderer } = require('electron');
+			let URLInput = null;
+			let TabsDiv = null;
+			let selectedTab = -1;
+			
+			let actualURL = '';
+			
+			/*ipcRenderer.on('updateTitle', tabId, newTitle)
+			{
+				tabs[tabId] = newTitle;
+				let obj = document.getElementById('tab' + tabId)
+				//obj.innerHTML = newTitle
+			}*/
+			
+			ipcRenderer.on('setSelectedTab', (event, tabId) =>
+			{
+				if(selectedTab != -1)
+					document.getElementById(`tab${selectedTab}`).innerHTML = `${selectedTab} (New Tab)`
+				selectedTab = tabId;
+				document.getElementById(`tab${selectedTab}`).innerHTML = `*${selectedTab} (New Tab)*`
+				console.log(`selecetd tab changed to ${tabId}`)
+			})
+			
+			ipcRenderer.on('newURL', (event, tabId, newURL) =>
+			{
+				if(selectedTab == tabId)
+				{
+					document.getElementById('URLInput').value = newURL;
+				}
+			})
+			
+			window.addEventListener('DOMContentLoaded', (event) =>
+			{
+				URLInput = document.getElementById('URLInput');
+				TabsDiv = document.getElementById('tabs');
+				
+				URLInput.addEventListener("keyup", function(event)
+				{
+					if(event.keyCode === 13) // if enter
+					{
+						event.preventDefault();
+						document.getElementById("goButton").click();
+					}
+				});
+				
+				newTab();
+				setSelectedTab(0);
+			})
+			
+			function go()
+			{
+				//tabs[selectedTab] = URLInput.value;
+				//let btn = document.getElementById(`tab${selectedTab}`);
+				//btn.innerHTML = tabs[selectedTab]
+				ipcRenderer.send('goURL', URLInput.value);
+				//alert('b')
+			}
+			
+			function newTab()
+			{
+				let id = ipcRenderer.sendSync('newTab')
+				TabsDiv.innerHTML += `<button onclick="setSelectedTab(${id})" id="tab${id}">${id} (New Tab)</button>`;
+				//ipcRenderer.send('addTab', 'tytul', 'a');
+				//alert('b')
+			}
+			
+			function setSelectedTab(id)
+			{
+				ipcRenderer.send('setSelectedTab', id);
+			}
+			
+			function updateURL()
+			{
+				URLInput = document.getElementById('URLInput');
+				if(URLInput == null) return
+				
+				let url = ipcRenderer.sendSync('getURL', selectedTab)
+				if(actualURL != url)
+				{
+					actualURL = url;
+					URLInput.value = url;
+				}
+			}
+			setInterval(updateURL, 100)
+		</script>
+	</head>
+	<body>
+		<div id="tabs">
+		</div>
+		<button onclick="newTab()">+</button>
+		<br>
+		<p>URL: </p> <input style="width:90%" id="URLInput" placeholder="Type URL here"></input> <button id="goButton" onclick="go()">Go</button>
+	</body>
+</html>

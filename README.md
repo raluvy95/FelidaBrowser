@@ -1,7 +1,7 @@
 
 # You selected REWRITE branch
 
-<p align="center"><img width="250" height="250" src="https://raw.githubusercontent.com/raluvy95/FelidaBrowser/tree/rewrite/assets/icon.png" alt="Felida icon"></p><br><br>
+<p align="center"><img width="250" height="250" src="https://raw.githubusercontent.com/raluvy95/FelidaBrowser/rewrite/assets/icon.png" alt="Felida icon"></p><br><br>
 
 # FelidaBrowser 
 A lightweight Chromium Browser using Electron.js!<br>

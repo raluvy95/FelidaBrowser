@@ -1,5 +1,7 @@
 console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain } = require('electron')
+const menu = require('./menu.js')
+const about = require('./about.js')
 
 /*
 this.tabs is array of BrowserView objects
@@ -12,6 +14,8 @@ class FelidaBrowser
 		console.log('Preloading browser...')
 		
 		app.on('window-all-closed', () => { app.quit() });
+		app.userAgentFallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) old-airport-include/1.0.0 Chrome Electron/7.1.7 Safari/537.36'
+		//TODO : FIX!
 		
 		this.activeTab = -1
 		this.tabs = []
@@ -25,36 +29,50 @@ class FelidaBrowser
 			}
 		});
 		
+		menu(this.mainWindow)
+		
 		// Tabs
 		this.etabsView = new BrowserView({
 			webPreferences: {
 				contextIsolation: false,
 				nodeIntegration: true
-			}
+			},
+			darkTheme: true
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 		this.mainWindow.addBrowserView(this.etabsView);
-		this.etabsView.webContents.openDevTools()
+		//this.etabsView.webContents.openDevTools()
 		
 		this.mainWindow.on('resize', () => { this.updateSizes(); });
+		this.mainWindow.on('goURL', (url) => { this.goURL(url); });
+		
+		this.mainWindow.on('tabBackward', (event) => { if(this.tabs[this.activeTab].webContents.canGoBack()) this.tabs[this.activeTab].webContents.goBack() })
+		this.mainWindow.on('tabForward', (event) => { if(this.tabs[this.activeTab].webContents.canGoForward()) this.tabs[this.activeTab].webContents.goForward() })
+		
+		this.mainWindow.on('about', (event) => {
+			about(this.mainWindow)
+		})
+		
+		this.mainWindow.on('settings', (event) => {
+			
+		})
+		
 		ipcMain.on('newTab', (event) => {
 			console.log(`adding tab`)
 			this.updateSizes();
 			event.returnValue = this.newTab();
 		})
 		
+		//this.mainWindow.on('')
+		
 		ipcMain.on('getURL', (event, id) => {
-			event.returnValue = this.tabs[id].webContents.getURL()
+			let a = this.tabs[id].webContents
+			if(a == null) { event.returnValue = ''; return; }
+			event.returnValue = a.getURL()
 		})
 		
-		ipcMain.on('goURL', (event, url) => {
-			console.log(`changing card ${this.activeTab} to ${url}`)
-			console.log(this.tabs, this.activeTab, url)
-			if(!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://')))
-				url = 'http://' + url
-			this.tabs[this.activeTab].webContents.loadURL(url)
-			this.updateSizes();
-		})
+		ipcMain.on('goURL', (event, url) => { this.goURL(url) })
+		ipcMain.on('tabForward', (event) => {  })
 		
 		ipcMain.on('setSelectedTab', (event, id) => {
 			if(this.activeTab > -1)
@@ -68,6 +86,16 @@ class FelidaBrowser
 			
 		})
 		
+		this.updateSizes();
+	}
+	
+	goURL(url) // on active tab
+	{
+		console.log(`changing card ${this.activeTab} to ${url}`)
+		console.log(this.tabs, this.activeTab, url)
+		if(!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://')))
+			url = 'http://' + url
+		this.tabs[this.activeTab].webContents.loadURL(url)
 		this.updateSizes();
 	}
 	

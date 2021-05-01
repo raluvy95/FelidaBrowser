@@ -98,6 +98,6 @@
 		</div>
 		<button onclick="newTab()">+</button>
 		<br>
-		<p>URL: </p> <input style="width:90%" id="URLInput" placeholder="Type URL here"></input> <button id="goButton" onclick="go()">Go</button>
+		<p>URL: </p> <input style="width:90%" onfocus="this.setSelectionRange(0, this.value.length)" id="URLInput" placeholder="Type URL here"></input> <button id="goButton" onclick="go()">Go</button>
 	</body>
 </html>

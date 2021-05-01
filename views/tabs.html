@@ -5,18 +5,91 @@
 		p {
 			display: inline-block;
 		}
+
 		body {
 			background-color: rgb(19, 19, 19);
 			color: white;
+			font-family: Arial, Helvetica, sans-serif;
+			margin: 0px;
 		}
-		.tabs button {
+
+		span {
+			display: none;
+		}
+
+		.tabs .nav {
+			margin: 0px;
+			padding: 3px;
+			background-color: rgb(75, 75, 75);
+			color: white;
+			text-decoration: none;
+			border: none;
+			transition: background-color 0.5s;
+		}
+
+		.tabs #navG {
+			font-size: 20px;
+			margin: 3px;
+			padding: 10px;
+			border-radius: 50%;
+		}
+
+		.tabs .nav:hover {
+			background-color: rgb(110, 110, 110);
+		}
+
+		.tabs #navG:hover {
+			background-color: rgb(47, 158, 62);
+		}
+
+		.tabs button:not(.nav) {
 			border-radius: 8px;
 			background-color: rgb(48, 48, 48);
 			color: white;
 			text-decoration: none;
 			text-align: center;
-			padding: 8px 5px;
+			padding: 5px 3px;
 			border: none;
+			transition: background-color 0.5s;
+		}
+
+		.tabs button:hover:not(.nav) {
+			background-color: rgb(87, 87, 87);
+		}
+
+		.tabs .plus {
+			padding: 5px;
+			border-radius: 50%;
+		}
+
+		.contextMenu {
+			position: absolute;
+			background-color: rgb(99, 99, 99);
+			color: white;
+		}
+
+		.URLInput {
+			position: sticky;
+			margin: 0px;
+			padding: 0px;
+		}
+
+		.URLInput input {
+			border: none;
+			background-color: rgb(46, 46, 46);
+			color: white;
+		}
+
+		.URLInput button {
+			background-color: rgb(0, 184, 28);
+			text-decoration: none;
+			border: none;
+			transition: background-color 0.5s;
+		}
+
+		.URLInput button:hover {
+			cursor: pointer;
+			background-color: rgb(66, 255, 94);
 		}
 	</style>
 	<script>
@@ -35,12 +108,16 @@
 		}*/
 
 		ipcRenderer.on('setSelectedTab', (event, tabId, title) => {
+			// I want to make (New Tab) into title, but dunno where
+			if (title.length > 25) {
+				title = title.slice(0, 25) + "..."
+			}
 			if (selectedTab != -1) {
-				document.getElementById(`tab${selectedTab}`).innerHTML = `${selectedTab} (New Tab)`
+				document.getElementById(`tab${selectedTab}`).innerHTML = `${selectedTab} ${title}`
 				document.getElementById(`tab${selectedTab}`).style.backgroundColor = "rgb(48, 48, 48)"
 			}
 			selectedTab = tabId;
-			document.getElementById(`tab${selectedTab}`).innerHTML = `*${selectedTab} (New Tab)*`
+			document.getElementById(`tab${selectedTab}`).innerHTML = `${selectedTab} ${title}`
 			document.getElementById(`tab${selectedTab}`).style.backgroundColor = "#696969"
 			console.log(`selecetd tab changed to ${tabId}`)
 		})
@@ -74,10 +151,30 @@
 			ipcRenderer.send('goURL', URLInput.value);
 			//alert('b')
 		}
-
+		function goBack() {
+			ipcRenderer.send("goBack", selectedTab)
+		}
+		function goFwd() {
+			ipcRenderer.send("goForward", selectedTab)
+		}
+		function closeTab() {
+			document.getElementById("closeTab").innerHTML = "XDDDDDDDDDD"
+		}
+		function menu(id) {
+			const coxMenu = document.createElement("div")
+			coxMenu.setAttribute("class", "contextMenu")
+			const close = document.createElement("button")
+			close.innerHTML = "Close"
+			close.setAttribute("onclick", `closeTab(${id});`)
+			close.setAttribute("id", "closeTab")
+			coxMenu.appendChild(close)
+			document.getElementById("tabs").appendChild(coxMenu)
+			return false;
+		}
 		function newTab() {
 			let id = ipcRenderer.sendSync('newTab')
-			TabsDiv.innerHTML += `<button onclick="setSelectedTab(${id})" id="tab${id}">${id} (New Tab)</button>`;
+			TabsDiv.innerHTML += `<button onclick="setSelectedTab(${id})" id="tab${id}" oncontextmenu="menu(${id});">${id} (New Tab)</button>`;
+			setSelectedTab(id)
 			//ipcRenderer.send('addTab', 'tytul', 'a');
 			//alert('b')
 		}
@@ -89,8 +186,8 @@
 		function updateURL() {
 			URLInput = document.getElementById('URLInput');
 			if (URLInput == null) return
-
 			let url = ipcRenderer.sendSync('getURL', selectedTab)
+			console.log(url)
 			if (actualURL != url) {
 				actualURL = url;
 				URLInput.value = url;
@@ -102,10 +199,14 @@
 
 <body>
 	<div id="tabs" class="tabs">
-		<button onclick="newTab()">+</button>
+		<button class="nav" id="navG" onclick="goBack();">❮</button>
+		<button class="nav" onclick="goFwd();">❯</button>
+		<button class="plus" onclick="newTab()">+</button>
 	</div>
-	<p>URL: </p> <input style="width:90%" onfocus="this.setSelectionRange(0, this.value.length)" id="URLInput"
-		placeholder="Type URL here"></input> <button id="goButton" onclick="go()">Go</button>
+	<div class="URLInput">
+		<p>URL: </p><input style="width: 90%;" onfocus="this.setSelectionRange(0, this.value.length)" id="URLInput"
+			placeholder="Type URL here"></input><button id="goButton" onclick="go()"><b>➔</b></button>
+	</div>
 </body>
 
 </html>

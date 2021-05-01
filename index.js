@@ -64,7 +64,14 @@ class FelidaBrowser {
 			this.updateSizes();
 			event.returnValue = this.newTab();
 		})
-
+		ipcMain.on('goBack', (event) => {
+			this.updateSizes();
+			this.mainWindow.emit('tabBackward')
+		})
+		ipcMain.on('goForward', (event) => {
+			this.updateSizes();
+			this.mainWindow.emit('tabForward')
+		})
 		//this.mainWindow.on('')
 
 		ipcMain.on('getURL', (event, id) => {
@@ -83,7 +90,7 @@ class FelidaBrowser {
 			this.activeTab = id;
 			this.mainWindow.addBrowserView(this.tabs[this.activeTab])
 			this.updateSizes();
-			event.reply('setSelectedTab', id, this.mainWindow.title)
+			event.reply('setSelectedTab', id, this.mainWindow.getBrowserViews()[1].webContents.getTitle())
 
 		})
 
@@ -117,7 +124,7 @@ class FelidaBrowser {
 			}
 		});
 		let size = this.mainWindow.getSize();
-		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 100 });
+		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 20 });
 		newTab.webContents.loadFile('views/index.html')
 
 		this.tabs.push(newTab)

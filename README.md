@@ -16,10 +16,12 @@ A lightweight Chromium Browser using Electron.js!<br>
   - #### Settings subpage
   - #### Browsing history
   - #### Bookmarks
+  - #### Fully customizable
+    - For example: Custom Background, CSS, Menu bar and much more.
 
 # System Requirements
-The browser's system requirements is same as Electron.js, so here's a [full system requirements](https://stackoverflow.com/questions/36306450/what-is-minimum-system-requirements-to-run-electron-apps)
-All operating systems requires to have 64 bit. Other arhitectures are supported, but not in the releases.
+The browser's system requirements is same as Electron.js, so here's a [full system requirements](https://stackoverflow.com/questions/36306450/what-is-minimum-system-requirements-to-run-electron-apps)<br>
+All operating systems requires to have 64 bit. Other arhitectures are supported, but not in the releases so you need to compile from source instead.
 | Windows | MacOS | Linux |
 | --- | --- | --- |
 | 7 and later | Not yet released<br>You need to run from source code instead. | Ubuntu 16.04<br>Fedora 21<br>Debian 8 |

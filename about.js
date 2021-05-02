@@ -9,10 +9,11 @@ const about = (top) => {
 		modal: true,
 		show: false,
 		width: 500,
-		height: 250
+		height: 250,
+		title: 'Felida Browser',
+		icon: './assets/icon.png'
 	})
 	
-	win.setMenu(null)
 	win.maximizable = false;
 	win.minimizable = false;
 	win.resizable = false;

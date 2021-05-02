@@ -1,5 +1,6 @@
 const { BrowserWindow, ipcMain, app } = require("electron")
 const settings = (top) => {
+	console.log('SETTINGS')
 	const win = new BrowserWindow({
 		webPreferences: {
 			contextIsolation: false,
@@ -9,10 +10,11 @@ const settings = (top) => {
 		modal: true,
 		show: false,
 		width: 700,
-		height: 500
+		height: 500,
+		title: 'Felida Browser',
+		icon: './assets/icon.png'
 	})
 	
-	win.setMenu(null)
 	win.maximizable = false;
 	win.minimizable = false;
 	win.resizable = false;

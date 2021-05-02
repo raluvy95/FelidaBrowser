@@ -1,102 +1,24 @@
 <html>
 
 <head>
-	<style>
-		p {
-			display: inline-block;
-		}
-
-		body {
-			background-color: rgb(19, 19, 19);
-			color: white;
-			font-family: Arial, Helvetica, sans-serif;
-			margin: 0px;
-		}
-
-		span {
-			display: none;
-		}
-
-		.tabs .nav {
-			margin: 0px;
-			padding: 3px;
-			background-color: rgb(75, 75, 75);
-			color: white;
-			text-decoration: none;
-			border: none;
-			transition: background-color 0.5s;
-		}
-
-		.tabs #navG {
-			font-size: 20px;
-			margin: 3px;
-			padding: 10px;
-			border-radius: 50%;
-		}
-
-		.tabs .nav:hover {
-			background-color: rgb(110, 110, 110);
-		}
-
-		.tabs #navG:hover {
-			background-color: rgb(47, 158, 62);
-		}
-
-		.tabs button:not(.nav):not(.tab-close) {
-			border-radius: 8px;
-			background-color: rgb(48, 48, 48);
-			color: white;
-			text-decoration: none;
-			text-align: center;
-			padding: 5px 3px;
-			border: none;
-			transition: background-color 0.5s;
-		}
-
-		.tabs button:hover:not(.nav):not(.tab-close) {
-			background-color: rgb(87, 87, 87);
-		}
-
-		.tabs .plus {
-			padding: 5px;
-			border-radius: 50%;
-		}
-
-		.contextMenu {
-			position: absolute;
-			background-color: rgb(99, 99, 99);
-			color: white;
-		}
-
-		.URLInput {
-			position: sticky;
-			margin: 0px;
-			padding: 0px;
-		}
-
-		.URLInput input {
-			border: none;
-			background-color: rgb(46, 46, 46);
-			color: white;
-		}
-
-		.URLInput button {
-			background-color: rgb(0, 184, 28);
-			text-decoration: none;
-			border: none;
-			transition: background-color 0.5s;
-		}
-
-		.URLInput button:hover {
-			cursor: pointer;
-			background-color: rgb(66, 255, 94);
-		}
-	</style>
+	<link href="css/materialIconsRound.css" rel="stylesheet">
+	<link href="css/chrome-tabs.css" rel="stylesheet">
+	<link href="css/chrome-tabs-dark-theme.css" rel="stylesheet">
+	<link href="css/tabs.css" rel="stylesheet">
 	<script>
-		const { ipcRenderer } = require('electron');
+		window.nodeRequire = require;
+		delete window.require;
+		delete window.exports;
+		delete window.module;
+	</script>
+	<script>
+		const { ipcRenderer } = nodeRequire('electron');
 		let URLInput = null;
 		let TabsDiv = null;
+		let el = null;
+		let chromeTabs = null;
 		let selectedTab = -1;
+		let waitingID = null;
 
 		let actualURL = '';
 
@@ -106,20 +28,10 @@
 			let obj = document.getElementById('tab' + tabId)
 			//obj.innerHTML = newTitle
 		}*/
-
+		
 		ipcRenderer.on('setSelectedTab', (event, tabId) => {
-			// I want to make (New Tab) into title, but dunno where
-			/*if (title.length > 25) {
-				title = title.slice(0, 25) + "..."
-			}*/
-			if (selectedTab != -1 && document.getElementById(`tab${selectedTab}-div`) != null) {
-				document.getElementById(`tab${selectedTab}-btn`).innerHTML = `New Tab`
-				document.getElementById(`tab${selectedTab}-btn`).style.backgroundColor = "rgb(48, 48, 48)"
-			}
 			selectedTab = tabId;
-			document.getElementById(`tab${selectedTab}-btn`).innerHTML = `New Tab`
-			document.getElementById(`tab${selectedTab}-btn`).style.backgroundColor = "#696969"
-			console.log(`Selected tab changed to ${tabId}`)
+			if(document.getElementById(tabId) != null) { chromeTabs.setCurrentTab(document.getElementById(tabId)) }
 		})
 
 		ipcRenderer.on('newURL', (event, tabId, newURL) => {
@@ -127,7 +39,9 @@
 				document.getElementById('URLInput').value = newURL;
 			}
 		})
-
+		
+		ipcRenderer.on("refresh", (event) => { ipcRenderer.send("refresh"); })
+		
 		window.addEventListener('DOMContentLoaded', (event) => {
 			URLInput = document.getElementById('URLInput');
 			TabsDiv = document.getElementById('tabs');
@@ -140,7 +54,60 @@
 				}
 			});
 
-			newTab();
+			
+			el = document.querySelector('.chrome-tabs')
+			chromeTabs = new ChromeTabs()
+
+			chromeTabs.init(el)
+
+			el.addEventListener('activeTabChange', ({ detail }) => {
+				if(selectedTab != detail.tabEl.id)
+				{
+					setSelectedTab(detail.tabEl.id)
+				}
+			})
+			
+			el.addEventListener('tabAdd', ({ detail }) => 
+			{
+				if(waitingID != null)
+				{
+					detail.tabEl.id = waitingID;
+					waitingID = null;
+				}
+			})
+			el.addEventListener('tabRemove', ({ detail }) => { closeTab(detail.tabEl.id) })
+
+			/*document.querySelector('button[data-add-background-tab]').addEventListener('click', _ => {
+			chromeTabs.addTab({
+			title: 'New Tab',
+			favicon: false
+			}, {
+			background: true
+			})
+			})
+
+			document.querySelector('button[data-remove-tab]').addEventListener('click', _ => {
+			chromeTabs.removeTab(chromeTabs.activeTabEl)
+			})
+
+			document.querySelector('button[data-theme-toggle]').addEventListener('click', _ => {
+			if (el.classList.contains('chrome-tabs-dark-theme')) {
+			document.documentElement.classList.remove('dark-theme')
+			el.classList.remove('chrome-tabs-dark-theme')
+			} else {
+			document.documentElement.classList.add('dark-theme')
+			el.classList.add('chrome-tabs-dark-theme')
+			}
+			})*/
+
+			window.addEventListener('keydown', (event) => {
+				if (event.ctrlKey && event.key === 't') {
+					newTab()
+				}
+			})
+			
+			newTab()
+			
 		})
 		
 		// src: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
@@ -166,16 +133,11 @@
 		function goFwd() {
 			ipcRenderer.send("goForward", selectedTab)
 		}
+		function refresh() {
+			ipcRenderer.send("refresh", selectedTab)
+		}
 		function closeTab(id) {
-			let sibling = document.getElementById(`tab${id}-div`).nextSibling
-			if (sibling == null) { sibling = document.getElementById(`tab${id}-div`).previousSibling; }
-			if (sibling == null || sibling.id.substring(0, 3) != 'tab') { ipcRenderer.send('closeBrowser'); return; }
-
-			let newSelectedId = parseInt(sibling.id.substring(3));
-			console.log(`switching to ${newSelectedId}`)
-			setSelectedTab(newSelectedId)
-
-			document.getElementById(`tab${id}-div`).remove()
+			if(document.getElementById(id) != null) chromeTabs.removeTab(document.getElementById(id))
 			ipcRenderer.send('closeTab', id)
 		}
 		/*function menu(id) {
@@ -191,7 +153,14 @@
 		}*/
 		function newTab() {
 			let id = ipcRenderer.sendSync('newTab')
-			TabsDiv.innerHTML += `<div id="tab${id}-div"><button onclick="setSelectedTab(${id})" id="tab${id}-btn" oncontextmenu="menu(${id});">(New Tab)</button><button class="tab-close" onclick="closeTab(${id})" id="tab${id}-close">-</button></div>`;
+			//TabsDiv.innerHTML += `<div id="tab${id}-div"><button onclick="setSelectedTab(${id})" id="tab${id}-btn" oncontextmenu="menu(${id});">(New Tab)</button><button class="tab-close" onclick="closeTab(${id})" id="tab${id}-close">-</button></div>`;
+			
+			waitingID = id // We let know, so whenever tabAdd event will be fired (that means tab was created proparly) we set it ID
+			chromeTabs.addTab({
+				title: 'New Tab',
+				favicon: false
+			})
+			
 			setSelectedTab(id)
 		}
 
@@ -209,18 +178,38 @@
 			}
 		}
 		setInterval(updateURL, 100)
+		
+		
+		
 	</script>
+	<script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
+    <script src="js/chrome-tabs.js"></script>
 </head>
 
 <body>
 	<div id="tabs" class="tabs">
-		<button class="nav" id="navG" onclick="goBack();">❮</button>
-		<button class="nav" onclick="goFwd();">❯</button>
-		<button class="plus" onclick="newTab()">+</button>
+		<button class="nav" onclick="goBack();"><span class="material-icons-round">
+			arrow_back
+			</span></button>
+		<button class="nav" onclick="goFwd();"><span class="material-icons-round">
+			arrow_forward
+			</span></button>
+		<button class="nav" onclick="refresh();"><span class="material-icons-round" id="refresh">
+				refresh
+			</span></button>
+		<button class="plus" onclick="newTab()"><span class="material-icons-round" style="font-family: 10px;">
+			add
+			</span></button>
+	</div>
+	<div class="chrome-tabs">
+		<div class="chrome-tabs-content"></div>
+		<div class="chrome-tabs-bottom-bar"></div>
 	</div>
 	<div class="URLInput">
 		<p>URL: </p><input style="width: 90%;" onfocus="this.setSelectionRange(0, this.value.length)" id="URLInput"
-			placeholder="Type URL here"></input><button id="goButton" onclick="go()"><b>➔</b></button>
+			placeholder="Type URL here"></input><button id="goButton" onclick="go()"><span class="material-icons-round">
+				arrow_forward
+				</span></button>
 	</div>
 </body>
 

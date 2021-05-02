@@ -156,7 +156,7 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 500 });
 		if (this.activeTab > -1) {
-			this.tabs[this.activeTab].setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 140 });
+			this.tabs[this.activeTab].setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 100 });
 		}
 	}
 
@@ -170,7 +170,7 @@ class FelidaBrowser {
 			}
 		});
 		let size = this.mainWindow.getSize();
-		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 20 });
+		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] });
 		newTab.webContents.loadFile('views/index.html')
 
 		this.tabs[id] = newTab

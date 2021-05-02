@@ -1,5 +1,5 @@
 const { BrowserWindow, ipcMain, app } = require("electron")
-const about = (top) => {
+const settings = (top) => {
 	const win = new BrowserWindow({
 		webPreferences: {
 			contextIsolation: false,
@@ -8,8 +8,8 @@ const about = (top) => {
 		parent: top,
 		modal: true,
 		show: false,
-		width: 500,
-		height: 250
+		width: 700,
+		height: 500
 	})
 	
 	win.setMenu(null)
@@ -19,15 +19,11 @@ const about = (top) => {
 	
 	//win.webContents.openDevTools()
 	
-	ipcMain.on('update', (event) => {
-		event.reply('update', app.getVersion(), process.versions.chrome, process.versions.electron, process.versions.node)
-	})
-	
-	win.loadFile('views/about.html')
+	win.loadFile('views/settings.html')
 		win.once("ready-to-show", () => {
 			win.show()
 			win.focus()
 	})
 }
 
-module.exports = about
+module.exports = settings

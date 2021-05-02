@@ -8,13 +8,23 @@ class FelidaBrowser {
 	preload() {
 		console.log('Preloading browser...')
 
-		app.on('window-all-closed', () => { app.quit() });
+		app.on('window-all-closed', () => { app.quit() }); // Quit browser after closing all windows
+		
+		// We need this for hacking google services, so they let's us login, but i'm having currently some problems with it (see: https://github.com/raluvy95/FelidaBrowser/issues/2)
 		//app.userAgentFallback = ''
 		//TODO : FIX!
 
-		this.activeTab = -1
-		this.tabs = []
-
+		this.tabs = {} // This contains all tabs in format:
+		/*
+			{
+				unixTime: [electron.BrowserView Object]
+			}
+			unixTime points to unix time of tab creation time
+		 */
+		this.activeTab = -1 // Tjis points to unix time, but at start is -1
+		
+		// Creating main window
+		// TODO: Base it on last its location
 		this.mainWindow = new BrowserWindow({
 			width: 800,
 			height: 600,
@@ -23,38 +33,33 @@ class FelidaBrowser {
 				nodeIntegration: true
 			}
 		});
-
+		
+		// Add menu
 		menu(this.mainWindow)
 
-		// Tabs
+		// Create etabsView for tabs
 		this.etabsView = new BrowserView({
 			webPreferences: {
 				contextIsolation: false,
 				nodeIntegration: true
-			},
-			darkTheme: true
+			}
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 		this.mainWindow.addBrowserView(this.etabsView);
-		//this.etabsView.webContents.openDevTools()
 
-		this.mainWindow.on('resize', () => { this.updateSizes(); });
+		this.mainWindow.on('resize', () => { this.updateSizes(); }); // update sizes when resizing window
 		this.mainWindow.on('goURL', (url) => { this.goURL(url); });
 
-		this.mainWindow.on('tabBackward', () => {
+		this.mainWindow.on('tabBackward', () => { // backward button
 			if (this.tabs[this.activeTab].webContents.canGoBack()) this.tabs[this.activeTab].webContents.goBack()
 		})
-		this.mainWindow.on('tabForward', () => {
+		this.mainWindow.on('tabForward', () => { // forward button
 			if (this.tabs[this.activeTab].webContents.canGoForward()) this.tabs[this.activeTab].webContents.goForward()
 		})
 
-		this.mainWindow.on('about', () => {
-			about(this.mainWindow)
-		})
-
-		this.mainWindow.on('settings', () => {
-			settings(this.mainWindow)
-		})
+		// About and Settings page
+		this.mainWindow.on('about', () => { about(this.mainWindow) })
+		this.mainWindow.on('settings', () => { settings(this.mainWindow) })
 
 		ipcMain.on('newTab', (event) => {
 			console.log(`adding tab`)
@@ -69,7 +74,6 @@ class FelidaBrowser {
 			this.updateSizes();
 			this.mainWindow.emit('tabForward')
 		})
-		//this.mainWindow.on('')
 
 		ipcMain.on('getURL', (event, id) => {
 			let a = this.tabs[id].webContents
@@ -108,12 +112,13 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 500 });
 		if (this.activeTab > -1) {
+			console.log(this.tabs,this.activeTab)
 			this.tabs[this.activeTab].setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 120 });
 		}
 	}
 
 	newTab() {
-		let id = this.tabs.length
+		let id = Date.now()
 		let newTab = new BrowserView({
 			webPreferences: {
 				contextIsolation: true,
@@ -124,7 +129,7 @@ class FelidaBrowser {
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 20 });
 		newTab.webContents.loadFile('views/index.html')
 
-		this.tabs.push(newTab)
+		this.tabs[id] = newTab
 		this.updateSizes();
 
 		return (id);

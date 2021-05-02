@@ -2,10 +2,7 @@ console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain } = require('electron')
 const menu = require('./menu.js')
 const about = require('./about.js')
-
-/*
-this.tabs is array of BrowserView objects
-*/
+const settings = require('./settings.js')
 
 class FelidaBrowser {
 	preload() {
@@ -56,7 +53,7 @@ class FelidaBrowser {
 		})
 
 		this.mainWindow.on('settings', () => {
-
+			settings(this.mainWindow)
 		})
 
 		ipcMain.on('newTab', (event) => {

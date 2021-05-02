@@ -42,7 +42,7 @@
 			background-color: rgb(47, 158, 62);
 		}
 
-		.tabs button:not(.nav) {
+		.tabs button:not(.nav):not(.tab-close) {
 			border-radius: 8px;
 			background-color: rgb(48, 48, 48);
 			color: white;
@@ -53,7 +53,7 @@
 			transition: background-color 0.5s;
 		}
 
-		.tabs button:hover:not(.nav) {
+		.tabs button:hover:not(.nav):not(.tab-close) {
 			background-color: rgb(87, 87, 87);
 		}
 
@@ -113,11 +113,11 @@
 				title = title.slice(0, 25) + "..."
 			}*/
 			if (selectedTab != -1 && document.getElementById(`tab${selectedTab}`) != null) {
-				document.getElementById(`tab${selectedTab}`).innerHTML = `${selectedTab} New Tab`
+				document.getElementById(`tab${selectedTab}`).innerHTML = `New Tab`
 				document.getElementById(`tab${selectedTab}`).style.backgroundColor = "rgb(48, 48, 48)"
 			}
 			selectedTab = tabId;
-			document.getElementById(`tab${selectedTab}`).innerHTML = `${selectedTab} New Tab`
+			document.getElementById(`tab${selectedTab}`).innerHTML = `New Tab`
 			document.getElementById(`tab${selectedTab}`).style.backgroundColor = "#696969"
 			console.log(`Selected tab changed to ${tabId}`)
 		})
@@ -158,14 +158,14 @@
 		}
 		function closeTab(id) {
 			let sibling = document.getElementById(`tab${id}-close`).nextSibling
-			if(sibling == null) { sibling = document.getElementById(`tab${id}`).previousSibling.previousSibling; }
-			if(sibling == null || sibling.id.substring(0,3) != 'tab') { ipcRenderer.send('closeBrowser'); return; }
-			
-			
+			if (sibling == null) { sibling = document.getElementById(`tab${id}`).previousSibling.previousSibling; }
+			if (sibling == null || sibling.id.substring(0, 3) != 'tab') { ipcRenderer.send('closeBrowser'); return; }
+
+
 			let newSelectedId = parseInt(sibling.id.substring(3));
 			console.log(`switching to ${newSelectedId}`)
 			setSelectedTab(newSelectedId)
-			
+
 			document.getElementById(`tab${id}`).remove()
 			document.getElementById(`tab${id}-close`).remove()
 			ipcRenderer.send('closeTab', id)
@@ -183,7 +183,7 @@
 		}*/
 		function newTab() {
 			let id = ipcRenderer.sendSync('newTab')
-			TabsDiv.innerHTML += `<button onclick="setSelectedTab(${id})" id="tab${id}" oncontextmenu="menu(${id});">${id} (New Tab)</button><button onclick="closeTab(${id})" id="tab${id}-close">-</button>`;
+			TabsDiv.innerHTML += `<button onclick="setSelectedTab(${id})" id="tab${id}" oncontextmenu="menu(${id});">(New Tab)</button><button class="tab-close" onclick="closeTab(${id})" id="tab${id}-close">-</button>`;
 			setSelectedTab(id)
 			//ipcRenderer.send('addTab', 'tytul', 'a');
 			//alert('b')

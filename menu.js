@@ -6,6 +6,7 @@ function menu(win) {
 			label: "File",
 			submenu: [
 				isMac ? { role: "close" } : { role: "quit" },
+				{ role: "minimize" },
 				{
 					label: "Settings",
 					click: () => {

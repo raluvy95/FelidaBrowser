@@ -26,13 +26,17 @@ a {
 .cool {
 	box-shadow: 0px 0px 17px 6px rgba(0,0,0,0.75);
 	border-radius: 50%;
+	transition: transform 2s;
 }
 .settings {
 	position: absolute;
 	right: 32px;
-	transition: transform 1s;
+	transition: transform 0.5s;
 	cursor: pointer;
 }
 .settings:hover {
 	transform: rotate(90deg);
+}
+.cool:hover {
+    transform: rotate(360deg);
 }

@@ -112,13 +112,13 @@
 			/*if (title.length > 25) {
 				title = title.slice(0, 25) + "..."
 			}*/
-			if (selectedTab != -1 && document.getElementById(`tab${selectedTab}`) != null) {
-				document.getElementById(`tab${selectedTab}`).innerHTML = `New Tab`
-				document.getElementById(`tab${selectedTab}`).style.backgroundColor = "rgb(48, 48, 48)"
+			if (selectedTab != -1 && document.getElementById(`tab${selectedTab}-div`) != null) {
+				document.getElementById(`tab${selectedTab}-btn`).innerHTML = `New Tab`
+				document.getElementById(`tab${selectedTab}-btn`).style.backgroundColor = "rgb(48, 48, 48)"
 			}
 			selectedTab = tabId;
-			document.getElementById(`tab${selectedTab}`).innerHTML = `New Tab`
-			document.getElementById(`tab${selectedTab}`).style.backgroundColor = "#696969"
+			document.getElementById(`tab${selectedTab}-btn`).innerHTML = `New Tab`
+			document.getElementById(`tab${selectedTab}-btn`).style.backgroundColor = "#696969"
 			console.log(`Selected tab changed to ${tabId}`)
 		})
 
@@ -142,13 +142,23 @@
 
 			newTab();
 		})
-
+		
+		// src: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
+		function validURL(str)
+		{
+			var pattern = new RegExp('^(https?:\\/\\/)?'+
+			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+
+			'((\\d{1,3}\\.){3}\\d{1,3}))'+
+			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+			'(\\?[;&a-z\\d%_.~+=-]*)?'+
+			'(\\#[-a-z\\d_]*)?$','i');
+			return !!pattern.test(str);
+		}
+		
 		function go() {
-			//tabs[selectedTab] = URLInput.value;
-			//let btn = document.getElementById(`tab${selectedTab}`);
-			//btn.innerHTML = tabs[selectedTab]
-			ipcRenderer.send('goURL', URLInput.value);
-			//alert('b')
+			let url = URLInput.value;
+			if(!validURL(url)) url = `https://google.com/search?q=${encodeURIComponent(URLInput.value)}`;
+			ipcRenderer.send('goURL', url);
 		}
 		function goBack() {
 			ipcRenderer.send("goBack", selectedTab)
@@ -157,17 +167,15 @@
 			ipcRenderer.send("goForward", selectedTab)
 		}
 		function closeTab(id) {
-			let sibling = document.getElementById(`tab${id}-close`).nextSibling
-			if (sibling == null) { sibling = document.getElementById(`tab${id}`).previousSibling.previousSibling; }
+			let sibling = document.getElementById(`tab${id}-div`).nextSibling
+			if (sibling == null) { sibling = document.getElementById(`tab${id}-div`).previousSibling; }
 			if (sibling == null || sibling.id.substring(0, 3) != 'tab') { ipcRenderer.send('closeBrowser'); return; }
-
 
 			let newSelectedId = parseInt(sibling.id.substring(3));
 			console.log(`switching to ${newSelectedId}`)
 			setSelectedTab(newSelectedId)
 
-			document.getElementById(`tab${id}`).remove()
-			document.getElementById(`tab${id}-close`).remove()
+			document.getElementById(`tab${id}-div`).remove()
 			ipcRenderer.send('closeTab', id)
 		}
 		/*function menu(id) {
@@ -183,10 +191,8 @@
 		}*/
 		function newTab() {
 			let id = ipcRenderer.sendSync('newTab')
-			TabsDiv.innerHTML += `<button onclick="setSelectedTab(${id})" id="tab${id}" oncontextmenu="menu(${id});">(New Tab)</button><button class="tab-close" onclick="closeTab(${id})" id="tab${id}-close">-</button>`;
+			TabsDiv.innerHTML += `<div id="tab${id}-div"><button onclick="setSelectedTab(${id})" id="tab${id}-btn" oncontextmenu="menu(${id});">(New Tab)</button><button class="tab-close" onclick="closeTab(${id})" id="tab${id}-close">-</button></div>`;
 			setSelectedTab(id)
-			//ipcRenderer.send('addTab', 'tytul', 'a');
-			//alert('b')
 		}
 
 		function setSelectedTab(id) {

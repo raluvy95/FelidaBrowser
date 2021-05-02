@@ -13,7 +13,7 @@ class FelidaBrowser {
 		// We need this for hacking google services, so they let's us login, but i'm having currently some problems with it (see: https://github.com/raluvy95/FelidaBrowser/issues/2)
 		//app.userAgentFallback = ''
 		//TODO : FIX!
-
+		
 		this.tabs = {} // This contains all tabs in format:
 		/*
 			{
@@ -46,7 +46,7 @@ class FelidaBrowser {
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 		
-		//this.etabsView.webContents.openDevTools()
+		this.etabsView.webContents.openDevTools()
 		
 		this.mainWindow.addBrowserView(this.etabsView);
 
@@ -80,7 +80,9 @@ class FelidaBrowser {
 
 		ipcMain.on('getURL', (event, id) => {
 			if (this.tabs[id] == null || this.tabs[id].webContents == null) { event.returnValue = ''; return; }
-			event.returnValue = this.tabs[id].webContents.getURL()
+			let url = this.tabs[id].webContents.getURL()
+			if(url == `file://${__dirname}/views/index.html`) url = ''
+			event.returnValue = url
 		})
 		
 		ipcMain.on('closeTab', (event, id) => {
@@ -124,7 +126,7 @@ class FelidaBrowser {
 		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 500 });
 		if (this.activeTab > -1) {
 			console.log(this.tabs,this.activeTab)
-			this.tabs[this.activeTab].setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 120 });
+			this.tabs[this.activeTab].setBounds({ x: 0, y: 120, width: size[0], height: size[1] - 140 });
 		}
 	}
 
@@ -139,7 +141,7 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 20 });
 		newTab.webContents.loadFile('views/index.html')
-
+		
 		this.tabs[id] = newTab
 		this.updateSizes();
 

@@ -36,10 +36,9 @@ span {
 .tabs .nav:hover {
 	background-color: rgb(82, 82, 82);
 }
-.tabs button:not(.nav):not(.tab-close) {
+.tabs button:not(input):not(.nav) {
 	border-radius: 8px;
 	background-color: rgb(48, 48, 48);
-	color: white;
 	text-decoration: none;
 	text-align: center;
 	padding: 5px 3px;
@@ -47,13 +46,34 @@ span {
 	transition: background-color 0.5s;
 }
 
-.tabs button:hover:not(.nav):not(.tab-close) {
-	background-color: rgb(87, 87, 87);
+.tabs button:hover, input:hover {
+	background-color: #575757;
+}
+
+.tabs input {
+	background-color: rgb(48, 48, 48);
+	text-decoration: none;
+	border: none;
+	transition: background-color 0.5s;
+	padding: 3px;
+	color: white;
 }
 
 .tabs .plus {
 	padding: 5px;
 	border-radius: 50%;
+	font-size: 3px;
+	color: white;
+	transition: background-color 0.5s;
+}
+
+.tabs .plus:hover {
+	background-color: #747474;
+}
+
+.tabs {
+	color: white;
+	transition: background-color 0.5s;
 }
 
 

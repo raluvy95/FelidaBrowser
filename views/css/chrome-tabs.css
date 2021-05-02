@@ -5,7 +5,7 @@
   font-size: 12px;
   height: 46px;
   padding: 8px 3px 4px 3px;
-  background: #dee1e6;
+  background: #202124;
   border-radius: 5px 5px 0 0;
   overflow: hidden;
 }
@@ -53,7 +53,7 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background: #a9adb0;
+  background: #4a4d51;
   opacity: 1;
   transition: opacity 0.2s ease;
 }
@@ -81,13 +81,13 @@
   height: 100%;
 }
 .chrome-tabs .chrome-tab .chrome-tab-background > svg .chrome-tab-geometry {
-  fill: #f4f5f6;
+  fill: #292b2e;
 }
 .chrome-tabs .chrome-tab[active] {
   z-index: 5;
 }
 .chrome-tabs .chrome-tab[active] .chrome-tab-background > svg .chrome-tab-geometry {
-  fill: #fff;
+  fill: rgb(19, 19, 19);
 }
 .chrome-tabs .chrome-tab:not([active]) .chrome-tab-background {
   transition: opacity 0.2s ease;
@@ -147,7 +147,7 @@
   overflow: hidden;
   white-space: nowrap;
   margin-left: 4px;
-  color: #5f6368;
+  color: #9ca1a7;
   -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 24px), transparent);
   mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 24px), transparent);
 }
@@ -163,7 +163,7 @@
   display: none;
 }
 .chrome-tabs .chrome-tab[active] .chrome-tab-title {
-  color: #45474a;
+  color: #f1f3f4;
 }
 .chrome-tabs .chrome-tab .chrome-tab-drag-handle {
   position: absolute;
@@ -181,22 +181,25 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(0, 0, 0, .65)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(154, 160, 166, .8)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: 8px 8px;
 }
 @media (hover: hover) {
   .chrome-tabs .chrome-tab .chrome-tab-close:hover {
-    background-color: #e8eaed;
+    background-color: #5f6368;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+    
   }
   .chrome-tabs .chrome-tab .chrome-tab-close:hover:active {
-    background-color: #dadce0;
+    background-color: #80868b;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
   }
 }
 @media not all and (hover: hover) {
   .chrome-tabs .chrome-tab .chrome-tab-close:active {
-    background-color: #dadce0;
+    background-color: #323639;
   }
 }
 @media (hover: hover) {
@@ -244,7 +247,7 @@
   height: 4px;
   left: 0;
   width: 100%;
-  background: #fff;
+  background: rgb(19, 19, 19);
   z-index: 10;
 }
 .chrome-tabs-optional-shadow-below-bottom-bar {

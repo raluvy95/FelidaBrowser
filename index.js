@@ -1,11 +1,10 @@
-if(process.argv.includes('--help'))
-{
+if (process.argv.includes('--help')) {
 	console.log('--log Runs app with logs')
 	process.exit()
 }
 
 let logger = null
-if(process.argv.includes('--log')) { logger = require('./logger.js').log; } else { logger = require('./logger.js').nolog; }
+if (process.argv.includes('--log')) { logger = require('./logger.js').log; } else { logger = require('./logger.js').nolog; }
 
 console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain, Menu } = require('electron')
@@ -17,11 +16,11 @@ class FelidaBrowser {
 		logger('Preloading browser...')
 
 		app.on('window-all-closed', () => { app.quit() }); // Quit browser after closing all windows
-		
+
 		// We need this for hacking google services, so they let's us login, but i'm having currently some problems with it (see: https://github.com/raluvy95/FelidaBrowser/issues/2)
 		//app.userAgentFallback = ''
 		//TODO : FIX!
-		
+
 		this.tabs = {} // This contains all tabs in format:
 		/*
 			{
@@ -30,7 +29,7 @@ class FelidaBrowser {
 			unixTime points to unix time of tab creation time
 		 */
 		this.activeTab = -1 // This points to unix time, but at start is -1
-		
+
 		// Creating main window
 		// TODO: Base it on last its location
 		this.mainWindow = new BrowserWindow({
@@ -44,14 +43,13 @@ class FelidaBrowser {
 			icon: './assets/icon.png',
 			show: false,
 		});
-		
-		this.mainWindow.once("ready-to-show", () =>
-		{
+
+		this.mainWindow.once("ready-to-show", () => {
 			this.mainWindow.show()
 			this.mainWindow.focus()
 		})
 		this.mainWindow.maximize()
-		
+
 		// Remove menu
 		Menu.setApplicationMenu(null)
 
@@ -63,7 +61,9 @@ class FelidaBrowser {
 			}
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
-		
+
+		this.etabsView.webContents.openDevTools()
+
 		this.mainWindow.addBrowserView(this.etabsView);
 
 		this.mainWindow.on('resize', () => { this.updateSizes(); }); // update sizes when resizing window
@@ -97,27 +97,27 @@ class FelidaBrowser {
 		ipcMain.on("refresh", (event) => {
 			logger(`Refreshing active tab ${this.activeTab}`)
 			this.tabs[this.activeTab].webContents.reload()
-			if(!this.tabs[this.activeTab].webContents.isLoading()) return;
+			if (!this.tabs[this.activeTab].webContents.isLoading()) return;
 		})
 		ipcMain.on('getURL', (event, id) => {
 			if (this.tabs[id] == null || this.tabs[id].webContents == null) { event.returnValue = ''; return; }
 			let url = this.tabs[id].webContents.getURL()
-			if(url == `file://${__dirname}/views/index.html`) url = ''
+			if (url == `file://${__dirname}/views/index.html`) url = ''
 			event.returnValue = url
 		})
-		
+
 		ipcMain.on('closeTab', (event, id) => {
 			logger(`Closing tab ${id}`)
-			if(this.activeTab == id) { this.close(); return }
+			if (this.activeTab == id) { this.close(); return }
 			delete this.tabs[id]
 		})
-		
+
 		ipcMain.on('closeBrowser', (event) => {
 			this.close()
 		})
-		
+
 		ipcMain.on('goURL', (event, url) => { this.goURL(url) })
-		
+
 		ipcMain.on('setSelectedTab', (event, id, title) => {
 			if (this.activeTab > -1) {
 				this.mainWindow.removeBrowserView(this.tabs[this.activeTab])
@@ -129,22 +129,20 @@ class FelidaBrowser {
 
 		})
 		ipcMain.on('settings', (event) => { this.settings() })
-		
+
 		this.updateSizes();
 	}
 
-	settings()
-	{
+	settings() {
 		logger(`Opening settings page`);
 		settings(this.mainWindow);
 	}
-	
-	about()
-	{
+
+	about() {
 		logger(`Opening about page`);
 		about(this.mainWindow);
 	}
-	
+
 	goURL(url) // on active tab
 	{
 		logger(`Moving tab ${this.activeTab} from ${this.tabs[this.activeTab].webContents.getURL()} to ${url}`)
@@ -174,17 +172,17 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 20 });
 		newTab.webContents.loadFile('views/index.html')
-		
+
 		this.tabs[id] = newTab
 		this.updateSizes();
 
 		return (id);
 	}
-	
+
 	run() {
 		logger('App started')
 	}
-	
+
 	close() {
 		logger('Closing browser')
 		app.quit()

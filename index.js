@@ -12,7 +12,7 @@ class FelidaBrowser {
 		console.log('Preloading browser...')
 
 		app.on('window-all-closed', () => { app.quit() });
-		app.userAgentFallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) old-airport-include/1.0.0 Chrome Electron/7.1.7 Safari/537.36'
+		//app.userAgentFallback = ''
 		//TODO : FIX!
 
 		this.activeTab = -1

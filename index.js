@@ -62,7 +62,7 @@ class FelidaBrowser {
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 
-		this.etabsView.webContents.openDevTools()
+		//this.etabsView.webContents.openDevTools()
 
 		this.mainWindow.addBrowserView(this.etabsView);
 
@@ -156,7 +156,7 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 500 });
 		if (this.activeTab > -1) {
-			this.tabs[this.activeTab].setBounds({ x: 0, y: 160, width: size[0], height: size[1] - 140 });
+			this.tabs[this.activeTab].setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 140 });
 		}
 	}
 

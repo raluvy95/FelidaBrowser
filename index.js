@@ -45,6 +45,9 @@ class FelidaBrowser {
 			}
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
+		
+		this.etabsView.webContents.openDevTools()
+		
 		this.mainWindow.addBrowserView(this.etabsView);
 
 		this.mainWindow.on('resize', () => { this.updateSizes(); }); // update sizes when resizing window
@@ -76,9 +79,17 @@ class FelidaBrowser {
 		})
 
 		ipcMain.on('getURL', (event, id) => {
-			let a = this.tabs[id].webContents
-			if (a == null) { event.returnValue = ''; return; }
-			event.returnValue = a.getURL()
+			if (this.tabs[id] == null || this.tabs[id].webContents == null) { event.returnValue = ''; return; }
+			event.returnValue = this.tabs[id].webContents.getURL()
+		})
+		
+		ipcMain.on('closeTab', (event, id) => {
+			if(this.activeTab == id) { console.log(`Can't delete active tab! ID: ${id}`); return }
+			delete this.tabs[id]
+		})
+		
+		ipcMain.on('closeBrowser', (event) => {
+			this.close()
 		})
 
 		ipcMain.on('goURL', (event, url) => { this.goURL(url) })
@@ -91,7 +102,7 @@ class FelidaBrowser {
 			this.activeTab = id;
 			this.mainWindow.addBrowserView(this.tabs[this.activeTab])
 			this.updateSizes();
-			event.reply('setSelectedTab', id, this.mainWindow.getBrowserViews()[1].webContents.getTitle())
+			event.reply('setSelectedTab', id)
 
 		})
 
@@ -134,8 +145,14 @@ class FelidaBrowser {
 
 		return (id);
 	}
+	
 	run() {
 		console.log('App started')
+	}
+	
+	close() {
+		console.log('Closing browser')
+		app.quit()
 	}
 }
 

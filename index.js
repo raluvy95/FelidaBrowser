@@ -14,7 +14,7 @@ class FelidaBrowser
 		console.log('Preloading browser...')
 		
 		app.on('window-all-closed', () => { app.quit() });
-		app.userAgentFallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) old-airport-include/1.0.0 Chrome Electron/7.1.7 Safari/537.36'
+		//app.userAgentFallback = ''
 		//TODO : FIX!
 		
 		this.activeTab = -1
@@ -54,7 +54,9 @@ class FelidaBrowser
 		})
 		
 		this.mainWindow.on('settings', (event) => {
-			
+			console.log('opening settings')
+			let id = this.newTab(false, true)
+			this.tabs[id].webContents.loadFile('views/settings.html')
 		})
 		
 		ipcMain.on('newTab', (event) => {
@@ -62,8 +64,6 @@ class FelidaBrowser
 			this.updateSizes();
 			event.returnValue = this.newTab();
 		})
-		
-		//this.mainWindow.on('')
 		
 		ipcMain.on('getURL', (event, id) => {
 			let a = this.tabs[id].webContents
@@ -109,13 +109,13 @@ class FelidaBrowser
 		}
 	}
 	
-	newTab()
+	newTab(isolation = true, integration = false)
 	{
 		let id = this.tabs.length
 		let newTab = new BrowserView({
 			webPreferences: {
-				contextIsolation: true,
-				nodeIntegration: false
+				contextIsolation: isolation,
+				nodeIntegration: integration
 			}
 		});
 		let size = this.mainWindow.getSize();

@@ -1,6 +1,6 @@
 
 # You selected REWRITE branch
-
+This is FelidaBrowser v1 which will be rewritten.<br><br><br>
 <p align="center"><img width="250" height="250" src="https://raw.githubusercontent.com/raluvy95/FelidaBrowser/rewrite/assets/icon.png" alt="Felida icon"></p><br><br>
 
 # FelidaBrowser 

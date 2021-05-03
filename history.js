@@ -1,4 +1,5 @@
 const { BrowserWindow, ipcMain, app } = require("electron")
+const fs = require('fs')
 const history = (top) => {
 	const win = new BrowserWindow({
 		webPreferences: {
@@ -8,8 +9,8 @@ const history = (top) => {
 		parent: top,
 		modal: true,
 		show: false,
-		width: 500,
-		height: 250,
+		width: 700,
+		height: 500,
 		title: 'Browsing history',
 		icon: './assets/icon.png'
 	})
@@ -18,13 +19,20 @@ const history = (top) => {
 	win.minimizable = false;
 	win.resizable = true;
 	
-	win.webContents.openDevTools()
+	//win.webContents.openDevTools()
 	
-	ipcMain.on('update', (event) => {
-		event.reply('update', app.getVersion(), process.versions.chrome, process.versions.electron, process.versions.node)
+	ipcMain.on('historydata', (event) => {
+		fs.readFile('./history.json', 'utf8', function (err, data)
+		{
+			if(err)
+			{
+				return console.log(err);
+			}
+			event.reply('historydata', data)
+		});
 	})
 	
-	win.loadFile('views/about.html')
+	win.loadFile('views/history.html')
 		win.once("ready-to-show", () => {
 			win.show()
 			win.focus()

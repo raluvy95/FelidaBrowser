@@ -56,7 +56,6 @@
 				}
 			});
 
-
 			el = document.querySelector('.chrome-tabs')
 			chromeTabs = new ChromeTabs()
 
@@ -75,36 +74,6 @@
 				}
 			})
 			el.addEventListener('tabRemove', ({ detail }) => { closeTab(detail.tabEl.id) })
-
-			/*document.querySelector('button[data-add-background-tab]').addEventListener('click', _ => {
-			chromeTabs.addTab({
-			title: 'New Tab',
-			favicon: false
-			}, {
-			background: true
-			})
-			})
-
-			document.querySelector('button[data-remove-tab]').addEventListener('click', _ => {
-			chromeTabs.removeTab(chromeTabs.activeTabEl)
-			})
-
-			document.querySelector('button[data-theme-toggle]').addEventListener('click', _ => {
-			if (el.classList.contains('chrome-tabs-dark-theme')) {
-			document.documentElement.classList.remove('dark-theme')
-			el.classList.remove('chrome-tabs-dark-theme')
-			} else {
-			document.documentElement.classList.add('dark-theme')
-			el.classList.add('chrome-tabs-dark-theme')
-			}
-			})*/
-
-			window.addEventListener('keydown', (event) => {
-				if (event.ctrlKey && event.key === 't') {
-					newTab()
-				}
-			})
-
 			newTab()
 			
 			function checkData()
@@ -198,7 +167,6 @@
 		}*/
 		function newTab() {
 			let id = ipcRenderer.sendSync('newTab')
-			//TabsDiv.innerHTML += `<div id="tab${id}-div"><button onclick="setSelectedTab(${id})" id="tab${id}-btn" oncontextmenu="menu(${id});">(New Tab)</button><button class="tab-close" onclick="closeTab(${id})" id="tab${id}-close">-</button></div>`;
 
 			waitingID = id // We let know, so whenever tabAdd event will be fired (that means tab was created proparly) we set it ID
 			chromeTabs.addTab({
@@ -222,9 +190,9 @@
 				URLInput.value = url;
 			}
 		}
-		function settings() {
-			ipcRenderer.send("settings")
-		}
+		function settings() { ipcRenderer.send("settings") }
+		function about() { ipcRenderer.send("about") }
+		function history() { ipcRenderer.send("history") }
 		setInterval(updateURL, 100)
 	</script>
 	<script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
@@ -258,6 +226,14 @@
 		<button title="Settings" class="nav" onclick="settings()"><span class="material-icons-round"
 				style="font-family: 10px;">
 				settings
+			</span></button>
+		<button title="About" class="nav" onclick="about()"><span class="material-icons-round"
+				style="font-family: 10px;">
+				info
+			</span></button>
+		<button title="History" class="nav" onclick="history()"><span class="material-icons-round"
+				style="font-family: 10px;">
+				history
 			</span></button>
 		<button title="More" class="nav" onclick="more()"><span class="material-icons-round" style="font-family: 10px;">
 				more_vert

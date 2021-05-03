@@ -8,6 +8,7 @@ if (process.argv.includes('--log')) { logger = require('./logger.js').log; } els
 
 console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain, Menu } = require('electron')
+const fs = require('fs');
 const contextMenu = require('electron-context-menu');
 const about = require('./about.js')
 const settings = require('./settings.js')
@@ -94,6 +95,10 @@ class FelidaBrowser {
 		// About and Settings page
 		this.mainWindow.on('about', () => { this.about() })
 		this.mainWindow.on('settings', () => { this.settings() })
+		this.mainWindow.on('history', () => { this.history() })
+		ipcMain.on('about', (event) => { this.about() })
+		ipcMain.on('settings', (event) => { this.settings() })
+		ipcMain.on('history', (event) => { this.history() })
 		
 		ipcMain.on('checkData', (event) => {
 			try {
@@ -157,14 +162,12 @@ class FelidaBrowser {
 
 		})
 		
-		ipcMain.on('settings', (event) => { this.settings() })
 		this.updateSizes();
 	}
 
 	settings() {
-		this.history()
-		//logger(`Opening settings page`);
-		//settings(this.mainWindow);
+		logger(`Opening settings page`);
+		settings(this.mainWindow);
 	}
 
 	about() {
@@ -176,14 +179,21 @@ class FelidaBrowser {
 		logger(`Opening history page`);
 		history(this.mainWindow);
 	}
-
+	
 	goURL(url) // on active tab
 	{
 		logger(`Moving tab ${this.activeTab} from ${this.tabs[this.activeTab].webContents.getURL()} to ${url}`)
 		if (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://') || url.startsWith('chrome://')))
 			url = 'https://' + url // for security reasons: https:// is the default
+		
 		this.tabs[this.activeTab].webContents.loadURL(url)
 		this.updateSizes();
+		
+		// log to history
+		fs.appendFile(`./history.json`, `${Date.now()}\r\n${this.tabs[this.activeTab].webContents.getTitle()}\r\n${url}\r\n`, function (err)
+		{
+			if (err) throw err;
+		});
 	}
 
 	updateSizes() {

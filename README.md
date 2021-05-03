@@ -10,7 +10,7 @@ A lightweight Chromium Browser using Electron.js!<br>
   - #### Multiple tabs support
 
 # TODO
-  - Browsing history
+  - Browsing history (small bug currently)
   - Settings subpage
   - Chrome extensions
   - Add uBlock Origin (including settings for it)
@@ -29,3 +29,13 @@ All operating systems requires to have 64 bit. Other arhitectures are supported,
 # Notes
 This browser is in BETA. If you really want to test it, please clone this respostory, install `npm i && npm i -g electron` and run using the command `electron .` or `npm start`<br>
 We would appreciate if you could fix all possible bugs and improve performance!
+
+# Notes for developers - ignore
+history.json
+unixtime1\r\n
+title1\r\n
+url1\r\n
+unixtime2\r\n
+title2\r\n
+url2\r\n
+etc.

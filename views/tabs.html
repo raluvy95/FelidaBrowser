@@ -114,25 +114,44 @@
 				{
 					// TODO: may need more optimization
 					// https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-					for(const [k,v] of Object.entries(data))
+					for(const [k1,v1] of Object.entries(data))
 					{
-						switch(k)
+						switch(k1)
 						{
 							case 'canGoBack':
-								if(v == backwardBtn.hasAttribute('inactive')) backwardBtn.toggleAttribute('inactive')
+								if(v1 == backwardBtn.hasAttribute('inactive')) backwardBtn.toggleAttribute('inactive')
 								break;
 							
 							case 'canGoForward':
-								if(v == forwardBtn.hasAttribute('inactive')) forwardBtn.toggleAttribute('inactive')
+								if(v1 == forwardBtn.hasAttribute('inactive')) forwardBtn.toggleAttribute('inactive')
 								break;
 							
 							case 'isLoading':
-								if(v != refreshBtn.hasAttribute('inactive')) refreshBtn.toggleAttribute('inactive')
+								if(v1 != refreshBtn.hasAttribute('inactive')) refreshBtn.toggleAttribute('inactive')
 								break;
 							
 							default:
-								console.log('err')
-								alert('err')
+								let f = null
+								for(const [k2,v2] of Object.entries(v1))
+								{
+									switch(k2)
+									{
+										case 'title':
+											f = v1.favicons; if(f != null) f = f[0];
+											chromeTabs.updateTab(document.getElementById(k1), {'title': v2, 'favicon': f})
+											break;
+										
+										case 'favicons':
+											f = v2; if(f != null) f = f[0];
+											chromeTabs.updateTab(document.getElementById(k1), {'favicon': f, 'title': v1.title})
+											break;
+										
+										default:
+											console.log(`Got unknown information for ${k1}:`, k2, ' in ', v1)
+											console.log(`Full incoming data: `, data)
+											break;
+									}
+								}
 								break;
 						}
 					}

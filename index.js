@@ -95,10 +95,11 @@ class FelidaBrowser {
 		this.mainWindow.on('settings', () => { this.settings() })
 		
 		ipcMain.on('checkData', (event) => {
+			try {
 			this.dataToSend['canGoBack'] = this.tabs[this.activeTab].webContents.canGoBack()
 			this.dataToSend['canGoForward'] = this.tabs[this.activeTab].webContents.canGoForward()
 			this.dataToSend['isLoading'] = this.tabs[this.activeTab].webContents.isLoading()
-			
+			} catch(e) { }
 			if(this.dataToSend != {})
 			{
 				event.returnValue = this.dataToSend;
@@ -198,7 +199,30 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] });
 		newTab.webContents.loadFile('views/index.html')
-
+		
+		function updateData(dts)
+		{
+			if(dts[id] == null) dts[id] = {}
+			dts[id].title = newTab.title;
+			dts[id].favicons = newTab.favicons;
+			return dts
+		}
+		
+		newTab.webContents.on('page-title-updated', (event, title, explicitSet) =>
+		{
+			logger(`Tab ${id} changed title to ${title}`)
+			newTab.title = title
+			this.dataToSend = updateData(this.dataToSend)
+		})
+		
+		newTab.webContents.on('page-favicon-updated', (event, favicons) =>
+		{
+			logger(`Tab ${id} changed favicons to ${favicons}`)
+			newTab.favicons = favicons
+			this.dataToSend = updateData(this.dataToSend)
+		})
+		
+		
 		this.tabs[id] = newTab
 		this.updateSizes();
 		contextMenu({
@@ -208,6 +232,7 @@ class FelidaBrowser {
 			showSaveImageAs: true,
 			showSearchWithGoogle: true
 		});
+		
 		return (id);
 	}
 

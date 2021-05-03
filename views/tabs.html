@@ -19,15 +19,11 @@
 		let chromeTabs = null;
 		let selectedTab = -1;
 		let waitingID = null;
+		let forwardBtn = null;
+		let backwardBtn = null;
 
 		let actualURL = '';
-
-		/*ipcRenderer.on('updateTitle', tabId, newTitle)
-		{
-			tabs[tabId] = newTitle;
-			let obj = document.getElementById('tab' + tabId)
-			//obj.innerHTML = newTitle
-		}*/
+		
 		ipcRenderer.on('setSelectedTab', (event, tabId) => {
 			selectedTab = tabId;
 			if (document.getElementById(tabId) != null) { chromeTabs.setCurrentTab(document.getElementById(tabId)) }
@@ -39,18 +35,17 @@
 			}
 		})
 
-		// this will auto-change title when the webContent changes the title.
-		ipcRenderer.on("titleUpdated", (event, tabId, title) => {
-			document.getElementById("tab-title").innerHTML = title
-		})
-
-		ipcRenderer.on("refresh", (event) => { ipcRenderer.send("refresh"); ipcRenderer.send("navUpdate"); })
+		ipcRenderer.on("refresh", (event) => { ipcRenderer.send("refresh"); })
 
 		window.addEventListener('DOMContentLoaded', (event) => {
 
 			URLInput = document.getElementById('URLInput');
 			TabsDiv = document.getElementById('tabs');
+			forwardBtn = document.getElementById("navFwd");
+			backwardBtn = document.getElementById("navBack");
+			refreshBtn = document.getElementById("refresh");
 
+			
 			URLInput.addEventListener("keyup", function (event) {
 				if (event.keyCode === 13) // if enter
 				{
@@ -111,27 +106,41 @@
 			})
 
 			newTab()
-
-			// This works, but keeps flashing every 1 sec for some reasons
-			document.getElementById("navBack").toggleAttribute("inactive")
-			document.getElementById("navFwd").toggleAttribute("inactive")
-			setInterval(() => {
-				const back = document.getElementById("navBack")
-				const fwd = document.getElementById("navFwd")
-				const obj = ipcRenderer.sendSync("navUpdate")
-				const deletedBack = !back.hasAttribute("inactive")
-				const deletedFwd = !fwd.hasAttribute("inactive")
-				if (obj.back) {
-					console.log("This can back")
-					back.toggleAttribute("inactive")
+			
+			function checkData()
+			{
+				let data = ipcRenderer.sendSync('checkData')
+				if(data != null)
+				{
+					// TODO: may need more optimization
+					// https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
+					for(const [k,v] of Object.entries(data))
+					{
+						switch(k)
+						{
+							case 'canGoBack':
+								if(v == backwardBtn.hasAttribute('inactive')) backwardBtn.toggleAttribute('inactive')
+								break;
+							
+							case 'canGoForward':
+								if(v == forwardBtn.hasAttribute('inactive')) forwardBtn.toggleAttribute('inactive')
+								break;
+							
+							case 'isLoading':
+								if(v != refreshBtn.hasAttribute('inactive')) refreshBtn.toggleAttribute('inactive')
+								break;
+							
+							default:
+								console.log('err')
+								alert('err')
+								break;
+						}
+					}
 				}
-				if (obj.fwd) {
-					console.log("This can forward")
-					fwd.toggleAttribute("inactive")
-				}
-				console.log(obj, deletedFwd, deletedBack)
-			}, 1000)
-
+				
+				setTimeout(checkData, 1)
+			}
+			checkData()
 		})
 
 		// src: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url

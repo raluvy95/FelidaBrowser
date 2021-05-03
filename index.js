@@ -30,7 +30,17 @@ class FelidaBrowser {
 			unixTime points to unix time of tab creation time
 		 */
 		this.activeTab = -1 // This points to unix time, but at start is -1
-
+		
+		this.dataToSend = {} // This contains data that will be send to tabs.
+		/*
+			{
+				TabID: { title: 'New Title', favicon: newFavicon }
+				'canGoBack': True/False
+				'canGoForward': True/False
+				'isLoading': True/False
+			}
+		*/
+		
 		// Creating main window
 		// TODO: Base it on last its location
 		this.mainWindow = new BrowserWindow({
@@ -64,7 +74,7 @@ class FelidaBrowser {
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 
-		this.etabsView.webContents.openDevTools()
+		//this.etabsView.webContents.openDevTools()
 
 		this.mainWindow.addBrowserView(this.etabsView);
 
@@ -83,7 +93,21 @@ class FelidaBrowser {
 		// About and Settings page
 		this.mainWindow.on('about', () => { this.about() })
 		this.mainWindow.on('settings', () => { this.settings() })
-
+		
+		ipcMain.on('checkData', (event) => {
+			this.dataToSend['canGoBack'] = this.tabs[this.activeTab].webContents.canGoBack()
+			this.dataToSend['canGoForward'] = this.tabs[this.activeTab].webContents.canGoForward()
+			this.dataToSend['isLoading'] = this.tabs[this.activeTab].webContents.isLoading()
+			
+			if(this.dataToSend != {})
+			{
+				event.returnValue = this.dataToSend;
+				this.dataToSend = {}
+			}
+			event.returnValue = null;
+		})
+		
+		
 		ipcMain.on('newTab', (event) => {
 			this.updateSizes();
 			event.returnValue = this.newTab();
@@ -119,7 +143,7 @@ class FelidaBrowser {
 		})
 
 		ipcMain.on('goURL', (event, url) => { this.goURL(url) })
-
+		
 		ipcMain.on('setSelectedTab', (event, id, title) => {
 			if (this.activeTab > -1) {
 				this.mainWindow.removeBrowserView(this.tabs[this.activeTab])
@@ -130,21 +154,7 @@ class FelidaBrowser {
 			event.reply('setSelectedTab', id)
 
 		})
-		ipcMain.on("navUpdate", (event) => {
-			let canGoBack = false
-			let canGoForward = false
-			if (this.tabs[this.activeTab].webContents.canGoBack()) {
-				if (this.tabs[this.activeTab].webContents.canGoForward()) {
-					canGoBack = true
-					canGoForward = true
-				} else {
-					canGoBack = true
-				}
-			} else if (this.tabs[this.activeTab].webContents.canGoForward()) {
-				canGoForward = true
-			}
-			event.returnValue = { back: canGoBack, fwd: canGoForward }
-		})
+		
 		ipcMain.on('settings', (event) => { this.settings() })
 		this.updateSizes();
 	}
@@ -211,13 +221,10 @@ class FelidaBrowser {
 	}
 }
 
-const extension = require('electron-chrome-extension')
-
 app.on('ready', async () => {
 	logger('App ready; Creating instance')
 	Browser = new FelidaBrowser();
 	Browser.preload();
 	Browser.run();
-	await extension.load('cjpalhdlnbpafiamejdnhcphjbkeiagm');
 });
 logger('Libs loaded; Waiting for app to be ready')

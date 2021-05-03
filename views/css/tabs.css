@@ -24,6 +24,10 @@ span {
 	position: relative;
 }
 
+*:focus {
+    outline: none;
+}
+
 .tabs .nav, .plus {
 	background-color: rgb(19, 19, 19);
 	margin: 0px;

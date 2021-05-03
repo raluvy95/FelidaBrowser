@@ -3,6 +3,7 @@ p {
 }
 
 body {
+	outline: none;
 	background-color: rgb(19, 19, 19);
 	color: white;
 	font-family: Arial, Helvetica, sans-serif;
@@ -19,6 +20,7 @@ span {
 }
 
 .tabs {
+	outline: none;
 	position: relative;
 }
 
@@ -47,6 +49,7 @@ span {
 
 
 .tabs {
+    outline: none;
 	color: white;
 	transition: background-color 0.5s;
 }
@@ -58,6 +61,7 @@ span {
 }
 
 input {
+	outline: none;
 	position: sticky;
 	margin: 0px;
 	padding: 6px;
@@ -68,6 +72,7 @@ input {
 }
 
 #goButton {
+	outline: none;
 	padding: 0px;
 	background-color: rgb(70, 70, 70);
 	text-decoration: none;

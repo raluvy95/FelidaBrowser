@@ -1,4 +1,5 @@
 <html>
+
 <head>
 	<link href="css/materialIconsRound.css" rel="stylesheet">
 	<link href="css/chrome-tabs.css" rel="stylesheet">
@@ -27,7 +28,6 @@
 			let obj = document.getElementById('tab' + tabId)
 			//obj.innerHTML = newTitle
 		}*/
-
 		ipcRenderer.on('setSelectedTab', (event, tabId) => {
 			selectedTab = tabId;
 			if (document.getElementById(tabId) != null) { chromeTabs.setCurrentTab(document.getElementById(tabId)) }
@@ -39,9 +39,15 @@
 			}
 		})
 
-		ipcRenderer.on("refresh", (event) => { ipcRenderer.send("refresh"); })
+		// this will auto-change title when the webContent changes the title.
+		ipcRenderer.on("titleUpdated", (event, tabId, title) => {
+			document.getElementById("tab-title").innerHTML = title
+		})
+
+		ipcRenderer.on("refresh", (event) => { ipcRenderer.send("refresh"); ipcRenderer.send("navUpdate"); })
 
 		window.addEventListener('DOMContentLoaded', (event) => {
+
 			URLInput = document.getElementById('URLInput');
 			TabsDiv = document.getElementById('tabs');
 
@@ -49,7 +55,9 @@
 				if (event.keyCode === 13) // if enter
 				{
 					event.preventDefault();
-					document.getElementById("goButton").click();
+					let url = URLInput.value;
+					if (!validURL(url) && !url.startsWith("chrome://")) url = `https://google.com/search?q=${encodeURIComponent(URLInput.value)}`;
+					ipcRenderer.send('goURL', url);
 				}
 			});
 
@@ -104,6 +112,26 @@
 
 			newTab()
 
+			// This works, but keeps flashing every 1 sec for some reasons
+			document.getElementById("navBack").toggleAttribute("inactive")
+			document.getElementById("navFwd").toggleAttribute("inactive")
+			setInterval(() => {
+				const back = document.getElementById("navBack")
+				const fwd = document.getElementById("navFwd")
+				const obj = ipcRenderer.sendSync("navUpdate")
+				const deletedBack = !back.hasAttribute("inactive")
+				const deletedFwd = !fwd.hasAttribute("inactive")
+				if (obj.back) {
+					console.log("This can back")
+					back.toggleAttribute("inactive")
+				}
+				if (obj.fwd) {
+					console.log("This can forward")
+					fwd.toggleAttribute("inactive")
+				}
+				console.log(obj, deletedFwd, deletedBack)
+			}, 1000)
+
 		})
 
 		// src: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
@@ -115,12 +143,6 @@
 				'(\\?[;&a-z\\d%_.~+=-]*)?' +
 				'(\\#[-a-z\\d_]*)?$', 'i');
 			return !!pattern.test(str);
-		}
-
-		function go() {
-			let url = URLInput.value;
-			if (!validURL(url)) url = `https://google.com/search?q=${encodeURIComponent(URLInput.value)}`;
-			ipcRenderer.send('goURL', url);
 		}
 		function goBack() {
 			ipcRenderer.send("goBack", selectedTab)
@@ -172,6 +194,9 @@
 				URLInput.value = url;
 			}
 		}
+		function settings() {
+			ipcRenderer.send("settings")
+		}
 		setInterval(updateURL, 100)
 	</script>
 	<script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
@@ -186,21 +211,28 @@
 	</div>
 	<!-- Navigation buttons (it's not tabs lol)-->
 	<div id="tabs" class="tabs">
-		<button title="Back" class="nav" onclick="goBack();"><span class="material-icons-round">
+		<button title="Back" class="nav" id="navBack" onclick="goBack();"><span class="material-icons-round">
 				arrow_back
 			</span></button>
-		<button title="Forward" class="nav" onclick="goFwd();"><span class="material-icons-round">
+		<button title="Forward" class="nav" id="navFwd" onclick="goFwd();"><span class="material-icons-round">
 				arrow_forward
 			</span></button>
-		<button title="Refresh" class="nav" onclick="refresh();"><span class="material-icons-round" id="refresh">
+		<button title="Refresh" class="nav" id="refresh" onclick="refresh();"><span class="material-icons-round"
+				id="refresh">
 				refresh
 			</span></button>
-		<button title="New Tab" class="plus" onclick="newTab()"><span class="material-icons-round" style="font-family: 10px;">
+		<button title="New Tab" class="nav" onclick="newTab()"><span class="material-icons-round"
+				style="font-family: 10px;">
 				add
 			</span></button>
 		<input style="width: 80%" this.setSelectionRange(0, this.value.length)" id="URLInput"
-			placeholder="Type URL here"></input><button title="Go" id="goButton" onclick="go()"><span class="material-icons-round">
-				arrow_forward
+			placeholder="Type URL here"></input>
+		<button title="Settings" class="nav" onclick="settings()"><span class="material-icons-round"
+				style="font-family: 10px;">
+				settings
+			</span></button>
+		<button title="More" class="nav" onclick="more()"><span class="material-icons-round" style="font-family: 10px;">
+				more_vert
 			</span></button>
 
 	</div>

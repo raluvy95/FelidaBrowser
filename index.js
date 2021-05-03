@@ -8,6 +8,7 @@ if (process.argv.includes('--log')) { logger = require('./logger.js').log; } els
 
 console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain, Menu } = require('electron')
+const contextMenu = require('electron-context-menu');
 const about = require('./about.js')
 const settings = require('./settings.js')
 
@@ -54,6 +55,7 @@ class FelidaBrowser {
 		Menu.setApplicationMenu(null)
 
 		// Create etabsView for tabs
+
 		this.etabsView = new BrowserView({
 			webPreferences: {
 				contextIsolation: false,
@@ -62,7 +64,7 @@ class FelidaBrowser {
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 
-		//this.etabsView.webContents.openDevTools()
+		this.etabsView.webContents.openDevTools()
 
 		this.mainWindow.addBrowserView(this.etabsView);
 
@@ -128,8 +130,22 @@ class FelidaBrowser {
 			event.reply('setSelectedTab', id)
 
 		})
+		ipcMain.on("navUpdate", (event) => {
+			let canGoBack = false
+			let canGoForward = false
+			if(this.tabs[this.activeTab].webContents.canGoBack()) {
+				if(this.tabs[this.activeTab].webContents.canGoForward()) {
+				    canGoBack = true
+					canGoForward = true
+				} else {
+					canGoBack = true
+				}
+			} else if(this.tabs[this.activeTab].webContents.canGoForward()) {
+				canGoForward = true
+			}
+			event.returnValue = {back: canGoBack, fwd: canGoForward}
+		})
 		ipcMain.on('settings', (event) => { this.settings() })
-
 		this.updateSizes();
 	}
 
@@ -146,7 +162,7 @@ class FelidaBrowser {
 	goURL(url) // on active tab
 	{
 		logger(`Moving tab ${this.activeTab} from ${this.tabs[this.activeTab].webContents.getURL()} to ${url}`)
-		if (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://')))
+		if (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://') || url.startsWith('chrome://')))
 			url = 'https://' + url // for security reasons: https:// is the default
 		this.tabs[this.activeTab].webContents.loadURL(url)
 		this.updateSizes();
@@ -175,7 +191,13 @@ class FelidaBrowser {
 
 		this.tabs[id] = newTab
 		this.updateSizes();
-
+		contextMenu({
+			window: newTab,
+			showCopyImage: true,
+			showCopyImageAddress: true,
+			showSaveImageAs: true,
+            showSearchWithGoogle: true
+		});
 		return (id);
 	}
 

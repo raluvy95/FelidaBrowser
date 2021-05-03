@@ -10,13 +10,12 @@ A lightweight Chromium Browser using Electron.js!<br>
   - #### Multiple tabs support
 
 # TODO
-  - #### Adblock build-in
-  - #### Better tabs style
-  - #### Black theme on all websites
-  - #### Settings subpage
-  - #### Browsing history
-  - #### Bookmarks
-  - #### Fully customizable
+  - Add uBlock Origin (including settings for it)
+  - Black theme on all websites
+  - Settings subpage
+  - Browsing history
+  - Bookmarks
+  - Fully customizable
     - For example: Custom Background, CSS, Menu bar and much more.
 
 # System Requirements

@@ -11,6 +11,7 @@ const { BrowserWindow, BrowserView, app, ipcMain, Menu } = require('electron')
 const contextMenu = require('electron-context-menu');
 const about = require('./about.js')
 const settings = require('./settings.js')
+const history = require('./history.js')
 
 class FelidaBrowser {
 	preload() {
@@ -161,13 +162,19 @@ class FelidaBrowser {
 	}
 
 	settings() {
-		logger(`Opening settings page`);
-		settings(this.mainWindow);
+		this.history()
+		//logger(`Opening settings page`);
+		//settings(this.mainWindow);
 	}
 
 	about() {
 		logger(`Opening about page`);
 		about(this.mainWindow);
+	}
+	
+	history() {
+		logger(`Opening history page`);
+		history(this.mainWindow);
 	}
 
 	goURL(url) // on active tab
@@ -181,7 +188,7 @@ class FelidaBrowser {
 
 	updateSizes() {
 		let size = this.mainWindow.getSize();
-		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 500 });
+		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 100 });
 		if (this.activeTab > -1) {
 			this.tabs[this.activeTab].setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 100 });
 		}

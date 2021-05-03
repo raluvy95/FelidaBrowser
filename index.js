@@ -154,7 +154,7 @@ class FelidaBrowser {
                 }
             }
         if (!( url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://'))) {
-			url = 'https://' + url // for security reasons: https:// is the default
+		url = 'https://' + url // for security reasons: https:// is the default
         }
 		this.tabs[this.activeTab].webContents.loadURL(url)
 		this.updateSizes();

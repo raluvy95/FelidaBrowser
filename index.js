@@ -10,7 +10,7 @@ console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain, Menu, session } = require('electron')
 const { ElectronBlocker, fullLists, Request } = require("@cliqz/adblocker-electron")
 const fetch = require("node-fetch")
-const {promises} = require('fs');
+const { promises } = require('fs');
 const fs = require("fs")
 const contextMenu = require('electron-context-menu');
 const about = require('./about.js')
@@ -265,28 +265,26 @@ app.allowRendererProcessReuse = false;
 
 app.on('ready', async () => {
 	logger('App ready; Creating instance')
+    
+	// ADBLOCK BEGIN
 
 	if (session.defaultSession === undefined) {
 		throw new Error('defaultSession is undefined');
 	}
 
-	const blocker = await ElectronBlocker.fromLists(
-		fetch,
-		fullLists,
-		{
-			enableCompression: true,
-		}, {
-			path: 'engine.bin',
-			read: promises.readFile,
-			write: promises.writeFile,
-		}
-	);
+	const blocker = await ElectronBlocker.fromLists(fetch, fullLists, { enableCompression: true }, {
+		path: 'engine.bin',
+		read: promises.readFile,
+		write: promises.writeFile,
+	});
 
 	blocker.enableBlockingInSession(session.defaultSession);
 
 	blocker.on('request-blocked', (request) => {
 		console.log('blocked', request.tabId, request.url);
 	});
+
+    // ADBLOCK END
 
 	Browser = new FelidaBrowser();
 	Browser.preload();

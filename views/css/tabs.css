@@ -71,6 +71,7 @@ input {
 	padding: 6px;
 	border: none;
 	border-radius: 20px;
+	width: 100vh;
 	background-color: rgb(46, 46, 46);
 	color: white;
 }

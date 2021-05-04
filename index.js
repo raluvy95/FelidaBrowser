@@ -281,7 +281,7 @@ app.on('ready', async () => {
 	blocker.enableBlockingInSession(session.defaultSession);
 
 	blocker.on('request-blocked', (request) => {
-		console.log('blocked', request.tabId, request.url);
+		logger(`Blocked Ad, tab ID: ${request.tabId}, Ad URL: ${request.url}`);
 	});
 
     // ADBLOCK END

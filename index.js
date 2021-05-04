@@ -7,8 +7,11 @@ let logger = null
 if (process.argv.includes('--log')) { logger = require('./logger.js').log; } else { logger = require('./logger.js').nolog; }
 
 console.log('Loading libraries...')
-const { BrowserWindow, BrowserView, app, ipcMain, Menu } = require('electron')
-const fs = require('fs');
+const { BrowserWindow, BrowserView, app, ipcMain, Menu, session } = require('electron')
+const { ElectronBlocker, fullLists, Request } = require("@cliqz/adblocker-electron")
+const fetch = require("node-fetch")
+const {promises} = require('fs');
+const fs = require("fs")
 const contextMenu = require('electron-context-menu');
 const about = require('./about.js')
 const settings = require('./settings.js')
@@ -32,7 +35,7 @@ class FelidaBrowser {
 			unixTime points to unix time of tab creation time
 		 */
 		this.activeTab = -1 // This points to unix time, but at start is -1
-		
+
 		this.dataToSend = {} // This contains data that will be send to tabs.
 		/*
 			{
@@ -42,7 +45,7 @@ class FelidaBrowser {
 				'isLoading': True/False
 			}
 		*/
-		
+
 		// Creating main window
 		// TODO: Base it on last its location
 		this.mainWindow = new BrowserWindow({
@@ -99,22 +102,21 @@ class FelidaBrowser {
 		ipcMain.on('about', (event) => { this.about() })
 		ipcMain.on('settings', (event) => { this.settings() })
 		ipcMain.on('history', (event) => { this.history() })
-		
+
 		ipcMain.on('checkData', (event) => {
 			try {
-			this.dataToSend['canGoBack'] = this.tabs[this.activeTab].webContents.canGoBack()
-			this.dataToSend['canGoForward'] = this.tabs[this.activeTab].webContents.canGoForward()
-			this.dataToSend['isLoading'] = this.tabs[this.activeTab].webContents.isLoading()
-			} catch(e) { }
-			if(this.dataToSend != {})
-			{
+				this.dataToSend['canGoBack'] = this.tabs[this.activeTab].webContents.canGoBack()
+				this.dataToSend['canGoForward'] = this.tabs[this.activeTab].webContents.canGoForward()
+				this.dataToSend['isLoading'] = this.tabs[this.activeTab].webContents.isLoading()
+			} catch (e) { }
+			if (this.dataToSend != {}) {
 				event.returnValue = this.dataToSend;
 				this.dataToSend = {}
 			}
 			event.returnValue = null;
 		})
-		
-		
+
+
 		ipcMain.on('newTab', (event) => {
 			this.updateSizes();
 			event.returnValue = this.newTab();
@@ -150,7 +152,7 @@ class FelidaBrowser {
 		})
 
 		ipcMain.on('goURL', (event, url) => { this.goURL(url) })
-		
+
 		ipcMain.on('setSelectedTab', (event, id, title) => {
 			if (this.activeTab > -1) {
 				this.mainWindow.removeBrowserView(this.tabs[this.activeTab])
@@ -161,7 +163,7 @@ class FelidaBrowser {
 			event.reply('setSelectedTab', id)
 
 		})
-		
+
 		this.updateSizes();
 	}
 
@@ -174,24 +176,23 @@ class FelidaBrowser {
 		logger(`Opening about page`);
 		about(this.mainWindow);
 	}
-	
+
 	history() {
 		logger(`Opening history page`);
 		history(this.mainWindow);
 	}
-	
+
 	goURL(url) // on active tab
 	{
 		logger(`Moving tab ${this.activeTab} from ${this.tabs[this.activeTab].webContents.getURL()} to ${url}`)
 		if (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://') || url.startsWith('chrome://')))
 			url = 'https://' + url // for security reasons: https:// is the default
-		
+
 		this.tabs[this.activeTab].webContents.loadURL(url)
 		this.updateSizes();
-		
+
 		// log to history
-		fs.appendFile(`./history.json`, `${Date.now()}\r\n${this.tabs[this.activeTab].webContents.getTitle()}\r\n${url}\r\n`, function (err)
-		{
+		fs.appendFile(`./history.json`, `${Date.now()}\r\n${this.tabs[this.activeTab].webContents.getTitle()}\r\n${url}\r\n`, function (err) {
 			if (err) throw err;
 		});
 	}
@@ -216,30 +217,27 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1] });
 		newTab.webContents.loadFile('views/index.html')
-		
-		function updateData(dts)
-		{
-			if(dts[id] == null) dts[id] = {}
+
+		function updateData(dts) {
+			if (dts[id] == null) dts[id] = {}
 			dts[id].title = newTab.title;
 			dts[id].favicons = newTab.favicons;
 			return dts
 		}
-		
-		newTab.webContents.on('page-title-updated', (event, title, explicitSet) =>
-		{
+
+		newTab.webContents.on('page-title-updated', (event, title, explicitSet) => {
 			logger(`Tab ${id} changed title to ${title}`)
 			newTab.title = title
 			this.dataToSend = updateData(this.dataToSend)
 		})
-		
-		newTab.webContents.on('page-favicon-updated', (event, favicons) =>
-		{
+
+		newTab.webContents.on('page-favicon-updated', (event, favicons) => {
 			logger(`Tab ${id} changed favicons to ${favicons}`)
 			newTab.favicons = favicons
 			this.dataToSend = updateData(this.dataToSend)
 		})
-		
-		
+
+
 		this.tabs[id] = newTab
 		this.updateSizes();
 		contextMenu({
@@ -249,7 +247,7 @@ class FelidaBrowser {
 			showSaveImageAs: true,
 			showSearchWithGoogle: true
 		});
-		
+
 		return (id);
 	}
 
@@ -263,8 +261,33 @@ class FelidaBrowser {
 	}
 }
 
+app.allowRendererProcessReuse = false;
+
 app.on('ready', async () => {
 	logger('App ready; Creating instance')
+
+	if (session.defaultSession === undefined) {
+		throw new Error('defaultSession is undefined');
+	}
+
+	const blocker = await ElectronBlocker.fromLists(
+		fetch,
+		fullLists,
+		{
+			enableCompression: true,
+		}, {
+			path: 'engine.bin',
+			read: promises.readFile,
+			write: promises.writeFile,
+		}
+	);
+
+	blocker.enableBlockingInSession(session.defaultSession);
+
+	blocker.on('request-blocked', (request) => {
+		console.log('blocked', request.tabId, request.url);
+	});
+
 	Browser = new FelidaBrowser();
 	Browser.preload();
 	Browser.run();

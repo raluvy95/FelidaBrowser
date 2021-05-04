@@ -31,11 +31,11 @@ This browser is in BETA. If you really want to test it, please clone this respos
 We would appreciate if you could fix all possible bugs and improve performance!
 
 # Notes for developers - ignore
-history.json
-unixtime1\r\n
-title1\r\n
-url1\r\n
-unixtime2\r\n
-title2\r\n
-url2\r\n
-etc.
+history.json<br>
+unixtime1\r\n<br>
+title1\r\n<br>
+url1\r\n<br>
+unixtime2\r\n<br>
+title2\r\n<br>
+url2\r\n<br>
+etc.<br>

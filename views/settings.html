@@ -8,8 +8,22 @@
 <body>
 	<div id="general">
 		<h1>General</h1>
+		<span class="material-icons">cached</span>
+		<h3> Clean Cache</h3>
 		<p>WARNING: This action cannot be undo.</p>
 		<button onclick="clear()">Clear Cache</button>
+		<h3>Default Search engine</h3>
+		<p>Select one of them to set default search engine</p>
+		<select id="searcheng">
+			<option value="google">Google</option>
+			<option value="ddg">DuckDuckGo</option>
+			<option value="bing">Bing</option>
+			<option value="yahoo">Yahoo</option>
+		</select>
+		<p>Own UserAgent (leave blank for default)</p>
+		<input type="text" id="UserAgent">
+		<!-- <p>Ignore Websites (separated with comma)</p>
+		<input type="text" id="AdBlockIgnoredWebsites"> -->
 	</div>
 	<div>
 		<h1>AdBlock</h1>
@@ -18,12 +32,8 @@
 			<input type="checkbox" id="AdBlockEnable">
 			<span class="slider round"></span>
 		</label>
-		<p>Own UserAgent (leave blank for default)</p>
-		<input type="text" id="UserAgent">
-		<!-- <p>Ignore Websites (separated with comma)</p>
-		<input type="text" id="AdBlockIgnoredWebsites"> -->
 	</div>
-	
+
 	<button id="close" onclick="saveAndClose()">Save and Close</button>
 	<script>
 		const { ipcRenderer } = require('electron');
@@ -31,25 +41,42 @@
 		const AdBlockEnable = document.getElementById('AdBlockEnable')
 		//const AdBlockIgnoredWebsites = document.getElementById('AdBlockIgnoredWebsites')
 		const UserAgent = document.getElementById('UserAgent')
-		
-		function update(d)
-		{
+		const defSearch = document.getElementById('searcheng')
+
+		function clear() {
+			ipcRenderer.send("reqClear")
+		}
+
+		function update(d) {
 			data = d
 			AdBlockEnable.checked = data.AdBlockEnable
+			const searcheng = document.getElementById("searcheng")
+
+			for (var i, j = 0; i = searcheng.options[j]; j++) {
+				if (i.value == data.defaultSearch) {
+					searcheng.selectedIndex = j;
+					break;
+				}
+			}
 			//AdBlockIgnoredWebsites.value = data.AdBlockIgnoredWebsites
-			UserAgent.value = data.UserAgent
+			if (data.UserAgent === undefined) {
+				UserAgent.value = ''
+			}
+			else {
+				UserAgent.value = data.UserAgent
+			}
 		}
-		
-		function saveAndClose()
-		{
+
+		function saveAndClose() {
 			data.AdBlockEnable = AdBlockEnable.checked
 			//data.AdBlockIgnoredWebsites = AdBlockIgnoredWebsites.value
 			data.UserAgent = UserAgent.value
+			data.defaultSearch = defSearch.value
 			ipcRenderer.send('updatesettings', data)
 		}
-		
+
 		ipcRenderer.once('updatesettings', (event, d) => { update(d); })
-		ipcRenderer.send('getsettings',  null);
+		ipcRenderer.send('getsettings', null);
 	</script>
 </body>
 

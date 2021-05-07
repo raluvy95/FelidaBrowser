@@ -23,11 +23,11 @@ let browserSettings = settings.data()
 class FelidaBrowser {
 	preload() {
 		logger('Preloading browser...')
-		
+
 		app.on('window-all-closed', () => { app.quit() }); // Quit browser after closing all windows
 
 		this.defaultUserAgetFallback = app.userAgentFallback
-		
+
 		this.tabs = {} // This contains all tabs in format:
 		/*
 			{
@@ -103,11 +103,23 @@ class FelidaBrowser {
 		ipcMain.on('about', (event) => { this.about() })
 		ipcMain.on('settings', (event) => { this.settings() })
 		ipcMain.on('history', (event) => { this.history() })
-		
-		ipcMain.on('updatesettings', (event, d) =>
-		{
+
+		ipcMain.on('updatesettings', (event, d) => {
 			browserSettings = d
+			logger(browserSettings)
 			this.updateSettings()
+		})
+
+		ipcMain.on('getDefaultSearchEngine', (event) => {
+			logger(browserSettings)
+			event.returnValue = browserSettings.defaultSearch
+		})
+
+		ipcMain.on("reqClear", (event) => {
+			logger("Cleared!")
+			session.defaultSession.clearCache()
+			session.defaultSession.clearAuthCache()
+			session.defaultSession.clearHostResolverCache()
 		})
 
 		ipcMain.on('checkData', (event) => {
@@ -196,7 +208,7 @@ class FelidaBrowser {
 		if (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://') || url.startsWith('chrome://')))
 			url = 'https://' + url // for security reasons: https:// is the default
 
-		this.tabs[this.activeTab].webContents.loadURL(url, {userAgent: app.userAgentFallback})
+		this.tabs[this.activeTab].webContents.loadURL(url, { userAgent: app.userAgentFallback })
 		this.updateSizes();
 
 		// log to history
@@ -267,23 +279,20 @@ class FelidaBrowser {
 		logger('Closing browser')
 		app.quit()
 	}
-	
-	updateSettings()
-	{
+
+	updateSettings() {
 		// what to do on settings update
-		if(browserSettings.AdBlockEnable)
-		{
-			try { blocker.enableBlockingInSession(session.defaultSession); } catch(e) {}
-		}
-		else
-		{
-			try { blocker.disableBlockingInSession(session.defaultSession); } catch(e) {}
-		}
 		
-		if(browserSettings.UserAgent != null) app.userAgentFallback = browserSettings.UserAgent
+		if (browserSettings.AdBlockEnable) {
+			try { blocker.enableBlockingInSession(session.defaultSession); } catch (e) { }
+		}
+		else {
+			try { blocker.disableBlockingInSession(session.defaultSession); } catch (e) { }
+		}
+
+		if (browserSettings.UserAgent != null) app.userAgentFallback = browserSettings.UserAgent
 		else app.userAgentFallback = this.defaultUserAgetFallback
-		for(const [k,v] of Object.entries(this.tabs))
-		{
+		for (const [k, v] of Object.entries(this.tabs)) {
 			v.webContents.setUserAgent(app.userAgentFallback)
 		}
 	}
@@ -293,7 +302,7 @@ app.allowRendererProcessReuse = false;
 
 app.on('ready', async () => {
 	logger('App ready; Creating instance')
-	
+
 	if (session.defaultSession === undefined) {
 		throw new Error('defaultSession is undefined');
 	}
@@ -303,11 +312,11 @@ app.on('ready', async () => {
 		read: promises.readFile,
 		write: promises.writeFile,
 	});
-	
+
 	blocker.on('request-blocked', (request) => {
 		logger(`Blocked Ad, tab ID: ${request.tabId}, Ad URL: ${request.url}`);
 	});
-	
+
 	Browser = new FelidaBrowser();
 	Browser.preload();
 	Browser.run();

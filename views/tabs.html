@@ -23,7 +23,7 @@
 		let backwardBtn = null;
 
 		let actualURL = '';
-		
+
 		ipcRenderer.on('setSelectedTab', (event, tabId) => {
 			selectedTab = tabId;
 			if (document.getElementById(tabId) != null) { chromeTabs.setCurrentTab(document.getElementById(tabId)) }
@@ -45,13 +45,34 @@
 			backwardBtn = document.getElementById("navBack");
 			refreshBtn = document.getElementById("refresh");
 
-			
 			URLInput.addEventListener("keyup", function (event) {
 				if (event.keyCode === 13) // if enter
 				{
 					event.preventDefault();
 					let url = URLInput.value;
-					if (!validURL(url) && !url.startsWith("chrome://")) url = `https://google.com/search?q=${encodeURIComponent(URLInput.value)}`;
+					if (!validURL(url) && !url.startsWith("chrome://") && !url.startsWith("file://")) {
+						const defEngine = ipcRenderer.sendSync("getDefaultSearchEngine")
+						console.log(defEngine)
+						let search = "https://google.com/search?q="
+						switch (defEngine) {
+							case 'google':
+								search = "https://google.com/search?q="
+								break;
+							case 'ddg':
+								search = "https://duckduckgo.com/?q="
+								break;
+							case 'bing':
+								search = "https://www.bing.com/search?q="
+								break;
+							case 'yahoo':
+								search = "https://search.yahoo.com/search?p="
+								break;
+							default:
+								search = "https://google.com/search?q="
+								break;
+						}
+						url = search + encodeURIComponent(URLInput.value);
+					}
 					ipcRenderer.send('goURL', url);
 				}
 			});
@@ -75,46 +96,40 @@
 			})
 			el.addEventListener('tabRemove', ({ detail }) => { closeTab(detail.tabEl.id) })
 			newTab()
-			
-			function checkData()
-			{
+
+			function checkData() {
 				let data = ipcRenderer.sendSync('checkData')
-				if(data != null)
-				{
+				if (data != null) {
 					// TODO: may need more optimization
 					// https://stackoverflow.com/questions/34913675/how-to-iterate-keys-values-in-javascript
-					for(const [k1,v1] of Object.entries(data))
-					{
-						switch(k1)
-						{
+					for (const [k1, v1] of Object.entries(data)) {
+						switch (k1) {
 							case 'canGoBack':
-								if(v1 == backwardBtn.hasAttribute('inactive')) backwardBtn.toggleAttribute('inactive')
+								if (v1 == backwardBtn.hasAttribute('inactive')) backwardBtn.toggleAttribute('inactive')
 								break;
-							
+
 							case 'canGoForward':
-								if(v1 == forwardBtn.hasAttribute('inactive')) forwardBtn.toggleAttribute('inactive')
+								if (v1 == forwardBtn.hasAttribute('inactive')) forwardBtn.toggleAttribute('inactive')
 								break;
-							
+
 							case 'isLoading':
-								if(v1 != refreshBtn.hasAttribute('inactive')) refreshBtn.toggleAttribute('inactive')
+								if (v1 != refreshBtn.hasAttribute('inactive')) refreshBtn.toggleAttribute('inactive')
 								break;
-							
+
 							default:
 								let f = null
-								for(const [k2,v2] of Object.entries(v1))
-								{
-									switch(k2)
-									{
+								for (const [k2, v2] of Object.entries(v1)) {
+									switch (k2) {
 										case 'title':
-											f = v1.favicons; if(f != null) f = f[0];
-											chromeTabs.updateTab(document.getElementById(k1), {'title': v2, 'favicon': f})
+											f = v1.favicons; if (f != null) f = f[0];
+											chromeTabs.updateTab(document.getElementById(k1), { 'title': v2, 'favicon': f })
 											break;
-										
+
 										case 'favicons':
-											f = v2; if(f != null) f = f[0];
-											chromeTabs.updateTab(document.getElementById(k1), {'favicon': f, 'title': v1.title})
+											f = v2; if (f != null) f = f[0];
+											chromeTabs.updateTab(document.getElementById(k1), { 'favicon': f, 'title': v1.title })
 											break;
-										
+
 										default:
 											console.log(`Got unknown information for ${k1}:`, k2, ' in ', v1)
 											console.log(`Full incoming data: `, data)
@@ -125,7 +140,7 @@
 						}
 					}
 				}
-				
+
 				setTimeout(checkData, 1)
 			}
 			checkData()

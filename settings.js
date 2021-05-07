@@ -5,7 +5,7 @@ const fs = require('fs')
 
 function data()
 {
-	return JSON.parse(fs.readFileSync(__dirname + '/settings.json', 'utf8'))
+	try { return JSON.parse(fs.readFileSync(__dirname + '/settings.json', 'utf8')) } catch(e) { return {} }
 }
 
 function open(top)

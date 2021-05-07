@@ -26,10 +26,8 @@ class FelidaBrowser {
 		
 		app.on('window-all-closed', () => { app.quit() }); // Quit browser after closing all windows
 
-		// We need this for hacking google services, so they let's us login, but i'm having currently some problems with it (see: https://github.com/raluvy95/FelidaBrowser/issues/2)
-		//app.userAgentFallback = ''
-		//TODO : FIX!
-
+		this.defaultUserAgetFallback = app.userAgentFallback
+		
 		this.tabs = {} // This contains all tabs in format:
 		/*
 			{
@@ -198,7 +196,7 @@ class FelidaBrowser {
 		if (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('file://') || url.startsWith('chrome://')))
 			url = 'https://' + url // for security reasons: https:// is the default
 
-		this.tabs[this.activeTab].webContents.loadURL(url)
+		this.tabs[this.activeTab].webContents.loadURL(url, {userAgent: app.userAgentFallback})
 		this.updateSizes();
 
 		// log to history
@@ -280,6 +278,13 @@ class FelidaBrowser {
 		else
 		{
 			try { blocker.disableBlockingInSession(session.defaultSession); } catch(e) {}
+		}
+		
+		if(browserSettings.UserAgent != null) app.userAgentFallback = browserSettings.UserAgent
+		else app.userAgentFallback = this.defaultUserAgetFallback
+		for(const [k,v] of Object.entries(this.tabs))
+		{
+			v.webContents.setUserAgent(app.userAgentFallback)
 		}
 	}
 }

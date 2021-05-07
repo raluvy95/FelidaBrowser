@@ -18,8 +18,10 @@
 			<input type="checkbox" id="AdBlockEnable">
 			<span class="slider round"></span>
 		</label>
-		<p>Ignore Websites (separated with comma)</p>
-		<input type="text" id="AdBlockIgnoredWebsites">
+		<p>Own UserAgent (leave blank for default)</p>
+		<input type="text" id="UserAgent">
+		<!-- <p>Ignore Websites (separated with comma)</p>
+		<input type="text" id="AdBlockIgnoredWebsites"> -->
 	</div>
 	
 	<button id="close" onclick="saveAndClose()">Save and Close</button>
@@ -27,20 +29,22 @@
 		const { ipcRenderer } = require('electron');
 		let data = {}
 		const AdBlockEnable = document.getElementById('AdBlockEnable')
-		const AdBlockIgnoredWebsites = document.getElementById('AdBlockIgnoredWebsites')
+		//const AdBlockIgnoredWebsites = document.getElementById('AdBlockIgnoredWebsites')
+		const UserAgent = document.getElementById('UserAgent')
 		
 		function update(d)
 		{
-			console.log(d)
 			data = d
 			AdBlockEnable.checked = data.AdBlockEnable
-			AdBlockIgnoredWebsites.value = data.AdBlockIgnoredWebsites
+			//AdBlockIgnoredWebsites.value = data.AdBlockIgnoredWebsites
+			UserAgent.value = data.UserAgent
 		}
 		
 		function saveAndClose()
 		{
 			data.AdBlockEnable = AdBlockEnable.checked
-			data.AdBlockIgnoredWebsites = AdBlockIgnoredWebsites.value
+			//data.AdBlockIgnoredWebsites = AdBlockIgnoredWebsites.value
+			data.UserAgent = UserAgent.value
 			ipcRenderer.send('updatesettings', data)
 		}
 		

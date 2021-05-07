@@ -1,6 +1,16 @@
 const { BrowserWindow, ipcMain, app } = require("electron")
-const settings = (top) => {
-	console.log('SETTINGS')
+let logger = null
+if (process.argv.includes('--log')) { logger = require('./logger.js').log; } else { logger = require('./logger.js').nolog; }
+const fs = require('fs')
+
+function data()
+{
+	return JSON.parse(fs.readFileSync(__dirname + '/settings.json', 'utf8'))
+}
+
+function open(top)
+{
+	logger('From settings.js, settings opened')
 	const win = new BrowserWindow({
 		webPreferences: {
 			contextIsolation: false,
@@ -11,7 +21,7 @@ const settings = (top) => {
 		show: false,
 		width: 700,
 		height: 500,
-		title: 'Felida Browser',
+		title: 'Felida Browser - Settings',
 		icon: './assets/icon.png'
 	})
 	
@@ -21,6 +31,21 @@ const settings = (top) => {
 	
 	//win.webContents.openDevTools()
 	
+	ipcMain.once('getsettings', (event) =>
+	{
+		logger(`Reading ${__dirname}/settings.json`)
+		event.reply('updatesettings', data())
+	})
+	
+	ipcMain.once('updatesettings', (event, d) => {
+		fs.writeFile(__dirname + '/settings.json', JSON.stringify(d), function (err)
+		{
+			if (err) return logger(err);
+			logger('Saved!')
+		});
+		win.close()
+	})
+	
 	win.loadFile('views/settings.html')
 		win.once("ready-to-show", () => {
 			win.show()
@@ -28,4 +53,4 @@ const settings = (top) => {
 	})
 }
 
-module.exports = settings
+module.exports = { open, data }

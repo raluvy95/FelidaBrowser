@@ -1,2 +1,52 @@
-Currently, settings page is under rewrite.<br>
-We will be back soon!
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link href="css/settings.css" rel="stylesheet">
+</head>
+
+<body>
+	<div id="general">
+		<h1>General</h1>
+		<p>WARNING: This action cannot be undo.</p>
+		<button onclick="clear()">Clear Cache</button>
+	</div>
+	<div>
+		<h1>AdBlock</h1>
+		<p>Enable</p>
+		<label class="switch">
+			<input type="checkbox" id="AdBlockEnable">
+			<span class="slider round"></span>
+		</label>
+		<p>Ignore Websites (separated with comma)</p>
+		<input type="text" id="AdBlockIgnoredWebsites">
+	</div>
+	
+	<button id="close" onclick="saveAndClose()">Save and Close</button>
+	<script>
+		const { ipcRenderer } = require('electron');
+		let data = {}
+		const AdBlockEnable = document.getElementById('AdBlockEnable')
+		const AdBlockIgnoredWebsites = document.getElementById('AdBlockIgnoredWebsites')
+		
+		function update(d)
+		{
+			console.log(d)
+			data = d
+			AdBlockEnable.checked = data.AdBlockEnable
+			AdBlockIgnoredWebsites.value = data.AdBlockIgnoredWebsites
+		}
+		
+		function saveAndClose()
+		{
+			data.AdBlockEnable = AdBlockEnable.checked
+			data.AdBlockIgnoredWebsites = AdBlockIgnoredWebsites.value
+			ipcRenderer.send('updatesettings', data)
+		}
+		
+		ipcRenderer.once('updatesettings', (event, d) => { update(d); })
+		ipcRenderer.send('getsettings',  null);
+	</script>
+</body>
+
+</html>

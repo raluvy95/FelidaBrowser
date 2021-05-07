@@ -6,6 +6,8 @@ if (process.argv.includes('--help')) {
 let logger = null
 if (process.argv.includes('--log')) { logger = require('./logger.js').log; } else { logger = require('./logger.js').nolog; }
 
+let blocker = null
+
 console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain, Menu, session } = require('electron')
 const { ElectronBlocker, fullLists, Request } = require("@cliqz/adblocker-electron")
@@ -16,11 +18,12 @@ const contextMenu = require('electron-context-menu');
 const about = require('./about.js')
 const settings = require('./settings.js')
 const history = require('./history.js')
+let browserSettings = settings.data()
 
 class FelidaBrowser {
 	preload() {
 		logger('Preloading browser...')
-
+		
 		app.on('window-all-closed', () => { app.quit() }); // Quit browser after closing all windows
 
 		// We need this for hacking google services, so they let's us login, but i'm having currently some problems with it (see: https://github.com/raluvy95/FelidaBrowser/issues/2)
@@ -102,6 +105,12 @@ class FelidaBrowser {
 		ipcMain.on('about', (event) => { this.about() })
 		ipcMain.on('settings', (event) => { this.settings() })
 		ipcMain.on('history', (event) => { this.history() })
+		
+		ipcMain.on('updatesettings', (event, d) =>
+		{
+			browserSettings = d
+			this.updateSettings()
+		})
 
 		ipcMain.on('checkData', (event) => {
 			try {
@@ -165,11 +174,12 @@ class FelidaBrowser {
 		})
 
 		this.updateSizes();
+		this.updateSettings();
 	}
 
 	settings() {
 		logger(`Opening settings page`);
-		settings(this.mainWindow);
+		settings.open(this.mainWindow);
 	}
 
 	about() {
@@ -259,33 +269,40 @@ class FelidaBrowser {
 		logger('Closing browser')
 		app.quit()
 	}
+	
+	updateSettings()
+	{
+		// what to do on settings update
+		if(browserSettings.AdBlockEnable)
+		{
+			try { blocker.enableBlockingInSession(session.defaultSession); } catch(e) {}
+		}
+		else
+		{
+			try { blocker.disableBlockingInSession(session.defaultSession); } catch(e) {}
+		}
+	}
 }
 
 app.allowRendererProcessReuse = false;
 
 app.on('ready', async () => {
 	logger('App ready; Creating instance')
-    
-	// ADBLOCK BEGIN
-
+	
 	if (session.defaultSession === undefined) {
 		throw new Error('defaultSession is undefined');
 	}
 
-	const blocker = await ElectronBlocker.fromLists(fetch, fullLists, { enableCompression: true }, {
+	blocker = await ElectronBlocker.fromLists(fetch, fullLists, { enableCompression: true }, {
 		path: 'engine.bin',
 		read: promises.readFile,
 		write: promises.writeFile,
 	});
-
-	blocker.enableBlockingInSession(session.defaultSession);
-
+	
 	blocker.on('request-blocked', (request) => {
 		logger(`Blocked Ad, tab ID: ${request.tabId}, Ad URL: ${request.url}`);
 	});
-
-    // ADBLOCK END
-
+	
 	Browser = new FelidaBrowser();
 	Browser.preload();
 	Browser.run();

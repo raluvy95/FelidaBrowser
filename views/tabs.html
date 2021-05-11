@@ -208,6 +208,7 @@
 		function settings() { ipcRenderer.send("settings") }
 		function about() { ipcRenderer.send("about") }
 		function history() { ipcRenderer.send("history") }
+		function moremenu() { ipcRenderer.send("moremenu") }
 		setInterval(updateURL, 100)
 	</script>
 	<script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
@@ -250,7 +251,7 @@
 				style="font-family: 10px;">
 				history
 			</span></button>
-		<button title="More" class="nav" onclick="more()"><span class="material-icons-round" style="font-family: 10px;">
+		<button title="More" class="nav" onclick="moremenu()"><span class="material-icons-round" style="font-family: 10px;">
 				more_vert
 			</span></button>
 		</button>

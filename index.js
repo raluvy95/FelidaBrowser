@@ -18,6 +18,7 @@ const contextMenu = require('electron-context-menu');
 const about = require('./about.js')
 const settings = require('./settings.js')
 const history = require('./history.js')
+const moremenu = require('./moremenu.js')
 let browserSettings = settings.data()
 
 class FelidaBrowser {
@@ -100,9 +101,11 @@ class FelidaBrowser {
 		this.mainWindow.on('about', () => { this.about() })
 		this.mainWindow.on('settings', () => { this.settings() })
 		this.mainWindow.on('history', () => { this.history() })
+		this.mainWindow.on('moremenu', (event) => { this.moremenu() })
 		ipcMain.on('about', (event) => { this.about() })
 		ipcMain.on('settings', (event) => { this.settings() })
 		ipcMain.on('history', (event) => { this.history() })
+		ipcMain.on('moremenu', (event) => { this.moremenu() })
 
 		ipcMain.on('updatesettings', (event, d) => {
 			browserSettings = d
@@ -200,6 +203,11 @@ class FelidaBrowser {
 	history() {
 		logger(`Opening history page`);
 		history(this.mainWindow);
+	}
+
+	moremenu() {
+		logger(`Opening moremenu page`)
+		moremenu(this.mainWindow)
 	}
 
 	goURL(url) // on active tab

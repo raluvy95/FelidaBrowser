@@ -37,8 +37,14 @@
 
 		ipcRenderer.on("refresh", (event) => { ipcRenderer.send("refresh"); })
 
-		window.addEventListener('DOMContentLoaded', (event) => {
+		ipcRenderer.on('updatesettings', (event, d) => {
+			console.log(d)
+			if (d.color) {
+				document.getElementById("bgTab").style.backgroundColor = d.color
+			}
+		})
 
+		window.addEventListener('DOMContentLoaded', (event) => {
 			URLInput = document.getElementById('URLInput');
 			TabsDiv = document.getElementById('tabs');
 			forwardBtn = document.getElementById("navFwd");
@@ -205,9 +211,6 @@
 				URLInput.value = url;
 			}
 		}
-		function settings() { ipcRenderer.send("settings") }
-		function about() { ipcRenderer.send("about") }
-		function history() { ipcRenderer.send("history") }
 		function moremenu() { ipcRenderer.send("moremenu") }
 		setInterval(updateURL, 100)
 	</script>
@@ -217,7 +220,7 @@
 
 <body>
 	<!-- An actual tabs -->
-	<div class="chrome-tabs">
+	<div class="chrome-tabs" id="bgTab">
 		<div class="chrome-tabs-content"></div>
 		<div class="chrome-tabs-bottom-bar"></div>
 	</div>
@@ -237,21 +240,10 @@
 				style="font-family: 10px;">
 				add
 			</span></button>
-		<input style="width: 75%" onclick="this.setSelectionRange(0, this.value.length)" id="URLInput"
+		<input style="width: 85%" onclick="this.setSelectionRange(0, this.value.length)" id="URLInput"
 			placeholder="Search Google or type a URL here"></input>
-		<button title="Settings" class="nav" onclick="settings()"><span class="material-icons-round"
+		<button title="More" class="nav" onclick="moremenu()"><span class="material-icons-round"
 				style="font-family: 10px;">
-				settings
-			</span></button>
-		<button title="About" class="nav" onclick="about()"><span class="material-icons-round"
-				style="font-family: 10px;">
-				info
-			</span></button>
-		<button title="History" class="nav" onclick="history()"><span class="material-icons-round"
-				style="font-family: 10px;">
-				history
-			</span></button>
-		<button title="More" class="nav" onclick="moremenu()"><span class="material-icons-round" style="font-family: 10px;">
 				more_vert
 			</span></button>
 		</button>

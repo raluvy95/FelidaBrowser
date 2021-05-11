@@ -2,9 +2,10 @@
 <html>
 
 <head>
+    <link href="css/materialIconsRound.css" rel="stylesheet">
     <style>
         body {
-            background-color: rgb(36, 36, 36);
+            background-color: rgb(19, 19, 19);
             margin: 0;
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             font-size: 20px;
@@ -13,12 +14,48 @@
             padding: 0px;
             margin: 0px;
         }
+        .button {
+            padding: 5px;
+            transition: background-color 0.4s;
+        }
+        .button:hover {
+            background-color: #202124;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
-    <h1>@.@</h1>
-    <p>It looks like the page did an oppsie. </p>
+    <div class="buttons">
+        <div onclick="history()" class="button"><span class="material-icons-round">history</span> History</div>
+        <div onclick="downloads()" class="button"><span class="material-icons-round">download</span> Downloads</div>
+        <div onclick="bookmarks()" class="button"><span class="material-icons-round">folder</span> Bookmarks</div>
+        <div onclick="find()" class="button"><span class="material-icons-round">find_in_page</span> Find in page</div>
+        <div onclick="settings()" class="button"><span class="material-icons-round">settings</span> Settings</div>
+        <div onclick="about()" class="button"><span class="material-icons-round">info</span> About</div>
+    </div>
 </body>
+<script>
+    const { ipcRenderer } = require('electron');
+    function history() {
+        ipcRenderer.send("history")
+    }
+    function downloads() {
+        // coming soon
+    }
+    function bookmarks() {
+        // coming soon
+    }
+    function find() {
+        // coming soon
+    }
+    function settings() {
+        ipcRenderer.send("settings")
+    }
+    function about() {
+        ipcRenderer.send("about")
+    }
+
+</script>
 
 </html>

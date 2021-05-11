@@ -26,6 +26,11 @@
 		<input type="text" id="AdBlockIgnoredWebsites"> -->
 	</div>
 	<div>
+		<h1>Appearance</h1>
+		<h3>Custom color</h3>
+		<input type="text" id="CustomColor">
+	</div>
+	<div>
 		<h1>AdBlock</h1>
 		<p>Enable</p>
 		<label class="switch">
@@ -42,6 +47,7 @@
 		//const AdBlockIgnoredWebsites = document.getElementById('AdBlockIgnoredWebsites')
 		const UserAgent = document.getElementById('UserAgent')
 		const defSearch = document.getElementById('searcheng')
+		const cusColor = document.getElementById("CustomColor")
 
 		function clear() {
 			ipcRenderer.send("reqClear")
@@ -65,6 +71,11 @@
 			else {
 				UserAgent.value = data.UserAgent
 			}
+			if(d.color) {
+				cusColor.value = d.color
+			} else {
+				cusColor.value = "#131313"
+			}
 		}
 
 		function saveAndClose() {
@@ -72,6 +83,7 @@
 			//data.AdBlockIgnoredWebsites = AdBlockIgnoredWebsites.value
 			data.UserAgent = UserAgent.value
 			data.defaultSearch = defSearch.value
+			data.color = cusColor.value
 			ipcRenderer.send('updatesettings', data)
 		}
 

@@ -81,7 +81,7 @@ class FelidaBrowser {
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 
-		this.etabsView.webContents.openDevTools()
+		//this.etabsView.webContents.openDevTools()
 
 		this.mainWindow.addBrowserView(this.etabsView);
 

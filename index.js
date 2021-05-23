@@ -259,6 +259,15 @@ class FelidaBrowser {
 			this.dataToSend = updateData(this.dataToSend)
 		})
 
+		/*
+		    ERROR PAGE IN COMING SOON
+		newTab.webContents.on("did-fail-load", (event, code, desc) => {
+			// this usually can load without getting an error
+			// and for some reasons, nodeIntergations doesn't exist in loadFile
+			// so uhm...
+			newTab.webContents.loadFile('views/404.html', {})
+		})*/
+
 		newTab.webContents.on('page-favicon-updated', (event, favicons) => {
 			logger(`Tab ${id} changed favicons to ${favicons}`)
 			newTab.favicons = favicons

@@ -119,10 +119,19 @@
 								break;
 
 							case 'isLoading':
-								if (v1 != refreshBtn.hasAttribute('inactive')) refreshBtn.toggleAttribute('inactive')
+								if (v1 != refreshBtn.hasAttribute('inactive')) refreshBtn.toggleAttribute('inactive');
+								try {
+									if (v1) {
+										const ID = Object.keys(data).filter(m => !isNaN(m))
+										const tabs = data[ID] // finds ID from object
+										chromeTabs.updateTab(document.getElementById(ID), { 'favicon': 'file:///home/raluca/Desktop/devs/FelidaBrowser/assets/loading.gif', 'title': tabs.title });
+									} else {
+										// nothing to do
+									}
+								} catch { } // no more annoying error xd
 								break;
-
 							default:
+								console.log(data)
 								let f = null
 								for (const [k2, v2] of Object.entries(v1)) {
 									switch (k2) {

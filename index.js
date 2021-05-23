@@ -81,7 +81,7 @@ class FelidaBrowser {
 		});
 		this.etabsView.webContents.loadFile('views/tabs.html');
 
-		//this.etabsView.webContents.openDevTools()
+		this.etabsView.webContents.openDevTools()
 
 		this.mainWindow.addBrowserView(this.etabsView);
 
@@ -153,8 +153,8 @@ class FelidaBrowser {
 		})
 		ipcMain.on("refresh", (event) => {
 			logger(`Refreshing active tab ${this.activeTab}`)
+			if (this.tabs[this.activeTab].webContents.isLoading()) return;
 			this.tabs[this.activeTab].webContents.reload()
-			if (!this.tabs[this.activeTab].webContents.isLoading()) return;
 		})
 		ipcMain.on('getURL', (event, id) => {
 			if (this.tabs[id] == null || this.tabs[id].webContents == null) { event.returnValue = ''; return; }
@@ -262,9 +262,9 @@ class FelidaBrowser {
 		newTab.webContents.on('page-favicon-updated', (event, favicons) => {
 			logger(`Tab ${id} changed favicons to ${favicons}`)
 			newTab.favicons = favicons
+			newTab.ID = null
 			this.dataToSend = updateData(this.dataToSend)
 		})
-
 
 		this.tabs[id] = newTab
 		this.updateSizes();
@@ -290,7 +290,7 @@ class FelidaBrowser {
 
 	updateSettings() {
 		// what to do on settings update
-		
+
 		if (browserSettings.AdBlockEnable) {
 			try { blocker.enableBlockingInSession(session.defaultSession); } catch (e) { }
 		}

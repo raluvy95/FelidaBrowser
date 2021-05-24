@@ -102,7 +102,7 @@
 			})
 			el.addEventListener('tabRemove', ({ detail }) => { closeTab(detail.tabEl.id) })
 			newTab()
-
+			
 			function checkData() {
 				let data = ipcRenderer.sendSync('checkData')
 				if (data != null) {
@@ -257,6 +257,11 @@
 			</span></button>
 		</button>
 		<!-- this will have adblock button -->
+	</div>
+	
+	<div id="bookmarks" class="bookmarks">
+		<button onclick="ipcRenderer.send('goURL', 'https://youtube.com');">Test bookmark</button>
+	</div>
 
 	</div>
 </body>

@@ -259,7 +259,7 @@ class FelidaBrowser {
 			this.dataToSend = updateData(this.dataToSend)
 		})
 
-		newTab.webContents.on("did-fail-load", (event, code, desc) => {
+		newTab.webContents.on("render-process-gone", (event, code, desc) => {
 			// this usually can load without getting an error
 			// so uhm...
 			const loadView = (error) => {

@@ -124,7 +124,7 @@
 									if (v1) {
 										const ID = Object.keys(data).filter(m => !isNaN(m))
 										const tabs = data[ID] // finds ID from object
-										chromeTabs.updateTab(document.getElementById(ID), { 'favicon': 'file:///home/raluca/Desktop/devs/FelidaBrowser/assets/loading.gif', 'title': tabs.title });
+										chromeTabs.updateTab(document.getElementById(ID), { 'favicon': '../assets/loading.gif', 'title': tabs.title });
 									} else {
 										// nothing to do
 									}

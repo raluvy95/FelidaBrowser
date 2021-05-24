@@ -259,14 +259,44 @@ class FelidaBrowser {
 			this.dataToSend = updateData(this.dataToSend)
 		})
 
-		/*
-		    ERROR PAGE IN COMING SOON
 		newTab.webContents.on("did-fail-load", (event, code, desc) => {
 			// this usually can load without getting an error
-			// and for some reasons, nodeIntergations doesn't exist in loadFile
 			// so uhm...
-			newTab.webContents.loadFile('views/404.html', {})
-		})*/
+			const loadView = (error) => {
+				return (`
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<style>
+						body {
+							background-color: rgb(36, 36, 36);
+							margin: 0;
+							font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+							font-size: 20px;
+							color: white;
+							text-align: center;
+							padding: 0px;
+							margin: 0px;
+						}
+						.err {
+							font-family: monospace;
+							font-size: 16px;
+							color: rgb(158, 158, 158);
+						}
+					</style>
+				</head>
+				<body>
+					<h1>@.@</h1>
+					<p>Ouch! Looks like the page did an oppsie</p>
+					<p>Maybe try again later?</p>
+					<h3 class="err">${error}</h3>
+				</body>
+				</html>
+				`)
+			}
+			const file = 'data:text/html;charset=UTF-8,' + encodeURIComponent(loadView(`${code}: ${desc}`));
+			newTab.webContents.loadURL(file)
+		})
 
 		newTab.webContents.on('page-favicon-updated', (event, favicons) => {
 			logger(`Tab ${id} changed favicons to ${favicons}`)

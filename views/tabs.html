@@ -130,6 +130,22 @@
 									}
 								} catch { } // no more annoying error xd
 								break;
+							/*
+							TODO: Add another animated favicon for waiting for response.
+							case 'isConnecting':
+							    const ID = Object.keys(data).filter(m => !isNaN(m))
+								const stillConnecting = document.getElementById(ID)
+								if(stillConnecting == null) break;
+								const isSameIcon = stillConnecting.querySelector(".chrome-tab-favicon").getAttribute("style").toString()
+								.replace('background-image: url("', '')
+								const tabs = data[ID]
+								if(isSameIcon == tabs.favicon + '");') break;
+								else {
+									if()
+									chromeTabs.updateTab(document.getElementById(ID), { 'favicon': '../assets/connecting.gif', 'title': tabs.title });
+								}
+								break;
+							*/
 							default:
 								console.log(data)
 								let f = null

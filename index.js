@@ -130,6 +130,9 @@ class FelidaBrowser {
 				this.dataToSend['canGoBack'] = this.tabs[this.activeTab].webContents.canGoBack()
 				this.dataToSend['canGoForward'] = this.tabs[this.activeTab].webContents.canGoForward()
 				this.dataToSend['isLoading'] = this.tabs[this.activeTab].webContents.isLoading()
+				/* TODO
+				this.dataToSend['isConnecting'] = this.tabs[this.activeTab].webContents.isWaitingForResponse()
+				*/
 			} catch (e) { }
 			if (this.dataToSend != {}) {
 				event.returnValue = this.dataToSend;
@@ -361,7 +364,8 @@ app.on('ready', async () => {
 	});
 
 	blocker.on('request-blocked', (request) => {
-		logger(`Blocked Ad, tab ID: ${request.tabId}, Ad URL: ${request.url}`);
+		// disabled for a while
+		//logger(`Blocked Ad, tab ID: ${request.tabId}, Ad URL: ${request.url}`);
 	});
 
 	Browser = new FelidaBrowser();

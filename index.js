@@ -15,10 +15,10 @@ const fetch = require("node-fetch")
 const { promises } = require('fs');
 const fs = require("fs")
 const contextMenu = require('electron-context-menu');
-const about = require('./about.js')
-const settings = require('./settings.js')
-const history = require('./history.js')
-const moremenu = require('./moremenu.js')
+const about = require('./window/about.js')
+const settings = require('./window/settings.js')
+const history = require('./window/history.js')
+const moremenu = require('./window/moremenu.js')
 let browserSettings = settings.data()
 
 class FelidaBrowser {

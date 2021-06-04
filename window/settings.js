@@ -1,6 +1,6 @@
 const { BrowserWindow, ipcMain, app } = require("electron")
 let logger = null
-if (process.argv.includes('--log')) { logger = require('./logger.js').log; } else { logger = require('./logger.js').nolog; }
+if (process.argv.includes('--log')) { logger = require('../logger.js').log; } else { logger = require('../logger.js').nolog; }
 const fs = require('fs')
 
 function data() {

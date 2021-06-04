@@ -76,17 +76,22 @@ input {
 	color: white;
 }
 
-#goButton {
-	outline: none;
-	padding: 0px;
-	background-color: rgb(70, 70, 70);
-	text-decoration: none;
-	border: none;
-	color: white;
-	transition: background-color 0.5s;
+.bookmarks {
+	margin: 0px;
 }
 
-#goButton:hover {
-	cursor: pointer;
-	background-color: rgb(66, 255, 94);
+.bookmarks button {
+	text-decoration: none;
+	margin: 3px;
+	border: none;
+	outline: none;
+	background-color: rgb(46, 46, 46);
+	color: rgb(207, 207, 207);
+	border-radius: 5px;
+	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	transition: background-color 0.6s;
+}
+
+.bookmarks button:hover {
+	background-color: rgb(92, 92, 92);
 }

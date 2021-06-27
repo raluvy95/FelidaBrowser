@@ -73,9 +73,15 @@ input {
 	border-radius: 20px;
 	width: 100vh;
 	background-color: rgb(46, 46, 46);
-	color: white;
+	color: rgb(146, 146, 146);
+	transition: color 0.4s;
 }
-
+input:hover {
+	color:white;
+}
+input:focus {
+	color:white;
+}
 .bookmarks {
 	margin: 0px;
 }

@@ -3,16 +3,16 @@
 
 <head>
 	<link href="css/settings.css" rel="stylesheet">
+	<link href="css/materialIconsRound.css" rel="stylesheet">
 </head>
 
 <body>
-	<div id="general">
-		<h1>General</h1>
-		<span class="material-icons">cached</span>
-		<h3> Clean Cache</h3>
+	<div id="general" class="grid">
+		<h1><span class="material-icons-round">settings</span> General</h1>
+		<h3><span class="material-icons-round">cached</span> Clean Cache</h3>
 		<p>WARNING: This action cannot be undo.</p>
 		<button onclick="clear()">Clear Cache</button>
-		<h3>Default Search engine</h3>
+		<h3><span class="material-icons-round">search</span>Default Search engine</h3>
 		<p>Select one of them to set default search engine</p>
 		<select id="searcheng">
 			<option value="google">Google</option>
@@ -20,24 +20,24 @@
 			<option value="bing">Bing</option>
 			<option value="yahoo">Yahoo</option>
 		</select>
-		<p>Own UserAgent (leave blank for default)</p>
+		<p><span class="material-icons-round">badge</span>Own UserAgent (leave blank for default)</p>
 		<input type="text" id="UserAgent">
 		<!-- <p>Ignore Websites (separated with comma)</p>
 		<input type="text" id="AdBlockIgnoredWebsites"> -->
 	</div>
-	<div>
-		<h1>Appearance</h1>
+	<div class="grid">
+		<h1><span class="material-icons-round">palette</span> Appearance</h1>
 		<h3>Custom color</h3>
 		<input type="color" id="CustomColor">
-		<h1>Dark Mode</h1>
+		<h3>Dark Mode</h3>
 		<p>By enabling this, some websites will automatically switch to dark mode theme</p>
 		<label class="switch">
 			<input type="checkbox" id="Enable">
 			<span class="slider round"></span>
 		</label>
 	</div>
-	<div>
-		<h1>AdBlock</h1>
+	<div class="grid">
+		<h1><span class="material-icons-round">block</span>AdBlock</h1>
 		<p>Enable</p>
 		<label class="switch">
 			<input type="checkbox" id="AdBlockEnable">
@@ -77,7 +77,7 @@
 			else {
 				UserAgent.value = data.UserAgent
 			}
-			if(d.color) {
+			if (d.color) {
 				cusColor.value = d.color
 			} else {
 				cusColor.value = "#131313"

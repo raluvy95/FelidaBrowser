@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "raluvy95",
   "license": "ISC",
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.20.5",

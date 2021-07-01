@@ -230,9 +230,9 @@ class FelidaBrowser {
 
 	updateSizes() {
 		let size = this.mainWindow.getSize();
-		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 100 });
+		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 110 });
 		if (this.activeTab > -1) {
-			this.tabs[this.activeTab].setBounds({ x: 0, y: 100, width: size[0], height: size[1] - 100 });
+			this.tabs[this.activeTab].setBounds({ x: 0, y: 110, width: size[0], height: size[1] - 110 });
 		}
 	}
 

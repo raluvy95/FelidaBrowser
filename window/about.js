@@ -24,6 +24,10 @@ const about = (top) => {
 		event.reply('update', app.getVersion(), process.versions.chrome, process.versions.electron, process.versions.node)
 	})
 	
+	ipcMain.on("aboutClose", (e) => {
+		win.close()
+	})
+
 	win.loadFile('views/about.html')
 		win.once("ready-to-show", () => {
 			win.show()

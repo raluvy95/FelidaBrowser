@@ -18,12 +18,9 @@ const history = (top) => {
 	win.maximizable = true;
 	win.minimizable = false;
 	win.resizable = true;
-	
-	//win.webContents.openDevTools()
-	
+
 	ipcMain.on('historydata', (event) => {
-		fs.readFile('./history.json', 'utf8', function (err, data)
-		{
+		fs.readFile('./history.json', 'utf8', function (err, data) {
 			if(err)
 			{
 				return console.log(err);

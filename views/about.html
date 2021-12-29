@@ -32,6 +32,7 @@
 			padding: 5px;
 			margin: 0px;
 		}
+
 		a {
 			text-decoration: none;
 			color: #2e2e2e;
@@ -50,15 +51,30 @@
 		Node.js: <span id="node"></span>
 	</p>
 	<p class="license">The browser is licensed under GPL version 3 or later.</p>
+	<button id="copy">Copy information to clipboard</button><button id="close">Close</button>
 	<script>
 		const { ipcRenderer } = require('electron');
-		ipcRenderer.once('update', (event, f, c, e, n) => {
+		ipcRenderer.once('update', (event, f, c, e, n, o) => {
 			document.getElementById("felida").innerHTML = f
 			document.getElementById("chrome").innerHTML = c
 			document.getElementById("electron").innerHTML = e
 			document.getElementById("node").innerHTML = n
 		})
 		ipcRenderer.send('update');
+		document.getElementById("close").addEventListener("click", () => {
+			ipcRenderer.send("aboutClose")
+		})
+		document.getElementById("copy").addEventListener("click", () => {
+			const txt = `**Felida:** ${document.getElementById("felida").innerHTML}
+**Chrome:** ${document.getElementById("chrome").innerHTML}
+**Electron:** ${document.getElementById("electron").innerHTML}
+**NodeJS:** ${document.getElementById("node").innerHTML}`
+        	navigator.clipboard.writeText(txt)
+			document.getElementById("copy").innerText = "Copied!"
+			setTimeout(() => {
+				document.getElementById("copy").innerText = "Copy information to clipboard"
+			}, 3000)
+		})
 	</script>
 </body>
 

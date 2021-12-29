@@ -189,6 +189,10 @@ class FelidaBrowser {
 
 		})
 
+		ipcMain.on("quit", event => {
+			this.close()
+		})
+
 		this.updateSizes();
 		this.updateSettings();
 	}
@@ -307,6 +311,7 @@ class FelidaBrowser {
 			newTab.ID = null
 			this.dataToSend = updateData(this.dataToSend)
 		})
+
 
 		this.tabs[id] = newTab
 		this.updateSizes();

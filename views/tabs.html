@@ -50,7 +50,27 @@
 			forwardBtn = document.getElementById("navFwd");
 			backwardBtn = document.getElementById("navBack");
 			refreshBtn = document.getElementById("refresh");
-
+			const defEngine1 = ipcRenderer.sendSync("getDefaultSearchEngine")
+			let placeholder = ''
+			switch (defEngine1) {
+				case 'google':
+					placeholder = "Google"
+						break;
+					case 'ddg':
+						placeholder = "DuckDuckGo"
+						break;
+					case 'bing':
+						placeholder = "Bing"
+						break;
+					case 'yahoo':
+						placeholder = "Yahoo"
+						break;
+					default:
+						placeholder = "Google"
+						break;
+			}
+			const getPlaceholder = URLInput.getAttribute("placeholder")
+			URLInput.setAttribute("placeholder", getPlaceholder.replace("{search}", placeholder))
 			URLInput.addEventListener("keyup", function (event) {
 				if (event.keyCode === 13) // if enter
 				{
@@ -266,7 +286,7 @@
 				add
 			</span></button>
 		<input style="width: 85%" onclick="this.setSelectionRange(0, this.value.length)" id="URLInput"
-			placeholder="Search Google or type a URL here" spellcheck="false"></input>
+			placeholder="Search with {search} or type a URL here" spellcheck="false"></input>
 		<button title="More" class="nav" onclick="moremenu()"><span class="material-icons-round"
 				style="font-family: 10px;">
 				more_vert

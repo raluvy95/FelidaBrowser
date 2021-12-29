@@ -48,7 +48,7 @@ span {
 }
 
 .tabs button:hover:not([inactive]) {
-	background-color: #575757;
+	background-color: rgb(87, 87, 87);
 }
 
 
@@ -74,13 +74,15 @@ input {
 	width: 100vh;
 	background-color: rgb(46, 46, 46);
 	color: rgb(146, 146, 146);
-	transition: color 0.4s;
+	transition: color, background-color 0.4s;
 }
 input:hover {
+	background-color: rgb(27, 27, 27);
 	color:white;
 }
 input:focus {
 	color:white;
+	background-color: rgb(15, 15, 15);
 }
 .bookmarks {
 	margin: 0px;

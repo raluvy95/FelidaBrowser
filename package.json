@@ -9,11 +9,12 @@
   "author": "raluvy95",
   "license": "ISC",
   "dependencies": {
-    "@cliqz/adblocker-electron": "^1.20.5",
-    "draggabilly": "^2.3.0",
-    "electron": "^11.4.4",
-    "electron-context-menu": "^3.0.0",
+    "@cliqz/adblocker-electron": "^1.23.2",
+    "draggabilly": "^3.0.0",
+    "electron": "^16.0.0",
+    "electron-context-menu": "^3.1.1",
     "jquery": "^3.6.0",
     "node-fetch": "^2.6.1"
-  }
+  },
+  "type": "commonjs"
 }

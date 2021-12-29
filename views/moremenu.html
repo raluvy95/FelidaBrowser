@@ -33,6 +33,7 @@
         <div onclick="find()" class="button"><span class="material-icons-round">find_in_page</span> Find in page</div>
         <div onclick="settings()" class="button"><span class="material-icons-round">settings</span> Settings</div>
         <div onclick="about()" class="button"><span class="material-icons-round">info</span> About</div>
+        <div onclick="quit()" class="button"><span class="material-icons-round">logout</span> Quit</div>
     </div>
 </body>
 <script>
@@ -54,6 +55,9 @@
     }
     function about() {
         ipcRenderer.send("about")
+    }
+    function quit() {
+        ipcRenderer.send("quit")
     }
 
 </script>

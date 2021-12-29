@@ -1,0 +1,8 @@
+body {
+    background-color: darkblue;
+    color: white;
+}
+
+.table {
+    display: grid;
+}

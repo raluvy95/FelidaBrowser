@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
-     <title>Felida Browser</title>
-     <link rel="stylesheet" type="text/css" href="style/index.css">
-    </head>
-    <body>
-        <img class="settings" src="./../assets/settings.svg" width="32px" onclick="call()">
-        <div id="nav-head"></div>
-        <h1>Felida Browser</h1>
-        <p>Welcome to the browser!</p>
-        <img src="./../assets/icon.png" width="200px" height="200px" class="cool"><br><br><br><br>
-        <p>Felida Browser is a lightweight Chromium browser using <a href="https://electronjs.org">ElectronJS</a></p><br><br><br>
-		<p>Made by <a href="https://youtube.com/catnowblue">CatNowBlue</a> • Fork me on <a href="https://github.com/raluvy95/felidabrowser">GitHub!</a><p>
-		<footer class="small">Source: <a href="https://wallpaperaccess.com/purple-mountain">this</a></footer>
-      <script>
-          function call() {
-              window.open("./settings.html")
-          }
-      </script>
-    </body>
+
+<head>
+    <title>Felida Browser</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="shortcut icon" type="image/png" href="./../assets/icon.png" />
+</head>
+
+<body>
+    <div id="nav-head"></div>
+    <h1>Felida Browser</h1>
+    <p>Welcome to the browser!</p>
+    <img src="./../assets/icon.png" width="200px" height="200px" class="cool"><br><br>
+    <input id="search" type="text" placeholder="Search with DuckDuckGo"><br><br>
+    <p>Felida Browser is a lightweight Chromium browser using <a href="https://electronjs.org">ElectronJS</a></p>
+    <p>Made by <a href="https://youtube.com/catnowblue">CatNowBlue</a> • Fork me on <a href="https://github.com/raluvy95/felidabrowser">GitHub!</a><p>
+    <footer class="small">Source: <a href="https://wallpaperaccess.com/purple-mountain">this</a></footer>
+</body>
+<script>
+document.getElementById("search").addEventListener("keypress", (event) => {
+    if (event.keyCode === 13) {
+        const query = document.getElementById("search")
+        window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(query.value)}`
+    }
+})
+</script>
 </html>

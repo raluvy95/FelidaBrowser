@@ -1,25 +1,106 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="./style/settings.css">
-    </head>
-    <body>
-        <div id="general">
-            <h1>General</h1>
-            <p>WARNING: This action cannot be undone.</p>
-            <button onclick="clear()">Clear Cache</button>
-        </div>
-        <div>
-            <h1>AdBlock</h1>
-            <p>Enable</p>
-            <label class="switch">
-                <input type="checkbox" id="aden" >
-                <span class="slider round"></span>
-            </label>
-            <p>Ignore Websites (separated with comma)</p>
-            <input type="text" id="adig">
-        </div>
-        <button id="close">OK</button>
-        <script src="./script/settings.js"></script>
-    </body>
+
+<head>
+	<link href="css/settings.css" rel="stylesheet">
+	<link href="css/materialIconsRound.css" rel="stylesheet">
+</head>
+
+<body>
+	<div id="general" class="grid">
+		<h1><span class="material-icons-round">settings</span> General</h1>
+		<h3><span class="material-icons-round">cached</span> Clean Cache</h3>
+		<p>WARNING: This action cannot be undo.</p>
+		<button onclick="clear()">Clear Cache</button>
+		<h3><span class="material-icons-round">search</span>Default Search engine</h3>
+		<p>Select one of them to set default search engine</p>
+		<select id="searcheng">
+			<option value="google">Google</option>
+			<option value="ddg">DuckDuckGo</option>
+			<option value="bing">Bing</option>
+			<option value="yahoo">Yahoo</option>
+		</select>
+		<p><span class="material-icons-round">badge</span>Own UserAgent (leave blank for default)</p>
+		<input type="text" id="UserAgent">
+		<!-- TODO: adds template -->
+		<p>or you can choose from template</p>
+		<select id="UserAgentSelection">
+			<option value="null">none</option>
+		</select>
+		<!-- <p>Ignore Websites (separated with comma)</p>
+		<input type="text" id="AdBlockIgnoredWebsites"> -->
+	</div>
+	<div class="grid">
+		<h1><span class="material-icons-round">palette</span> Appearance</h1>
+		<h3>Custom color</h3>
+		<input type="color" id="CustomColor">
+		<h3>Dark Mode</h3>
+		<p>By enabling this, some websites will automatically switch to dark mode theme</p>
+		<label class="switch">
+			<input type="checkbox" id="Enable">
+			<span class="slider round"></span>
+		</label>
+	</div>
+	<div class="grid">
+		<h1><span class="material-icons-round">block</span>AdBlock</h1>
+		<p>Enable</p>
+		<label class="switch">
+			<input type="checkbox" id="AdBlockEnable">
+			<span class="slider round"></span>
+		</label>
+	</div>
+
+	<button id="close" onclick="saveAndClose()">Save and Close</button>
+	<script>
+		const { ipcRenderer } = require('electron');
+		let data = {}
+		const AdBlockEnable = document.getElementById('AdBlockEnable')
+		//const AdBlockIgnoredWebsites = document.getElementById('AdBlockIgnoredWebsites')
+		const UserAgent = document.getElementById('UserAgent')
+		const defSearch = document.getElementById('searcheng')
+		const cusColor = document.getElementById("CustomColor")
+
+		function clear() {
+			ipcRenderer.send("reqClear")
+		}
+
+		function update(d) {
+			data = d
+			AdBlockEnable.checked = data.AdBlockEnable
+			const searcheng = document.getElementById("searcheng")
+
+			for (var i, j = 0; i = searcheng.options[j]; j++) {
+				if (i.value == data.defaultSearch) {
+					searcheng.selectedIndex = j;
+					break;
+				}
+			}
+			//AdBlockIgnoredWebsites.value = data.AdBlockIgnoredWebsites
+			if (data.UserAgent === undefined) {
+				UserAgent.value = ''
+			}
+			else {
+				UserAgent.value = data.UserAgent
+			}
+			if (d.color) {
+				cusColor.value = d.color
+			} else {
+				cusColor.value = "#131313"
+			}
+		}
+
+		function saveAndClose() {
+			data.AdBlockEnable = AdBlockEnable.checked
+			//data.AdBlockIgnoredWebsites = AdBlockIgnoredWebsites.value
+			data.UserAgent = UserAgent.value
+			data.defaultSearch = defSearch.value
+			data.color = cusColor.value
+			ipcRenderer.send('updatesettings', data)
+		}
+
+		ipcRenderer.once('updatesettings', (event, d) => { update(d); })
+		ipcRenderer.send('getsettings', null);
+	</script>
+</body>
+
 </html>

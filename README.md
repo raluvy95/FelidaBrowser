@@ -19,7 +19,7 @@ A lightweight Chromium Browser using Electron.js!<br>
 # Building & installing
 There's no new precompiled build yet, so the only option is to build it yourself.<br><br>
 
-You need to clone this repository, then go to the folder, open in terminal and use `npm i --save`. Finally, run `run.bat` if you're using Windows, otherwise `run.bat`.
+You need to clone this repository, then go to the folder, open in terminal and use `npm i --save`. Finally, run `./run.sh` if you're using Windows, otherwise `run.bat`.
 # System Requirements
 The browser's system requirements is same as Electron.js, so here's a [full system requirements](https://stackoverflow.com/questions/36306450/what-is-minimum-system-requirements-to-run-electron-apps)<br>
 All operating systems requires to have 64 bit. Other arhitectures are supported, but not in the releases so you need to compile from source instead.

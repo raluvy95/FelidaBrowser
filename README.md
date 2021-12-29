@@ -1,7 +1,8 @@
-<p align="center"><img width="250" height="250" src="./assets/icon.png" alt="Felida icon"></p><br><br>
-<h1 style="text-align: center;">Felida Browser</h1>
+<p align="center"><img width="250" height="250" src="./assets/icon.png" alt="Felida icon"></p>
+<h1 align="center">Felida Browser</h1>
 A lightweight Chromium Browser using Electron.js!<br>
 <img src="./assets/screenshot.png" alt="Felida icon">
+
 # Features
   - #### Multiple tabs support
 

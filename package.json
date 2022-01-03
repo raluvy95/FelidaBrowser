@@ -1,13 +1,12 @@
 {
   "name": "felida",
   "version": "1.0.0",
-  "description": "",
+  "description": "A lightweight chromium browser using Electron.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "raluvy95",
-  "license": "ISC",
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.23.2",
     "draggabilly": "^3.0.0",
@@ -16,5 +15,15 @@
     "jquery": "^3.6.0",
     "node-fetch": "^2.6.1"
   },
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raluvy95/FelidaBrowser.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/raluvy95/FelidaBrowser/issues"
+  },
+  "homepage": "https://github.com/raluvy95/FelidaBrowser#readme"
 }

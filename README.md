@@ -1,6 +1,12 @@
 <p align="center"><img width="250" height="250" src="./assets/icon.png" alt="Felida icon"></p>
 <h1 align="center">Felida Browser</h1>
-A lightweight Chromium Browser using Electron.js!<br>
+<p align="center">
+  <a href="https://opensource.org/licenses/"><img alt="GPLv3 License" src="https://img.shields.io/badge/License-GPL%20v3-yellow.svg"></a>
+  <a href="#badges"><img alt="Downloads" src="https://img.shields.io/github/downloads/raluvy95/FelidaBrowser/total.svg?style=flat"></a>
+  <a href="https://github.com/raluvy95/FelidaBrowser/issues"><img alt="Issues" src="https://img.shields.io/github/issues-raw/raluvy95/FelidaBrowser.svg"></a>
+  <a href="https://github.com/raluvy95/FelidaBrowser"><img alt="Fork" src="https://img.shields.io/github/forks/raluvy95/FelidaBrowser.svg?style=social&label=Fork"></a>
+  <a href="https://github.com/cliqz-oss/adblocker"><img alt="powered by Cliqz" src="https://img.shields.io/badge/cliqz-powered-blue?logo=cliqz"></a>
+</p><br>
 <img src="./assets/screenshot.png" alt="Felida icon">
 
 # Features

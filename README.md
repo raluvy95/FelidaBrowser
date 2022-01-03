@@ -6,12 +6,11 @@ A lightweight Chromium Browser using Electron.js!<br>
 # Features
 
   - #### Multiple tabs support
-  - #### Featured AdBlock build-in (using `@cliqz/adblocker-electron`)
+  - #### Featured AdBlock build-in (using `@cliqz/adblocker-electron` which contains EasyList and uBlock Origin project!)
 
 # TODO
   - Browsing history (small bug currently)
   - Chrome extensions
-  - Add uBlock Origin (including settings for it)
   - Black theme on all websites
   - Bookmarks
   - Fully customizable

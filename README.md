@@ -37,10 +37,6 @@ All operating systems requires to have 64 bit. Other arhitectures are supported,
 | 7 and later | Not yet released<br>You need to compile from source code instead. | Ubuntu 16.04<br>Fedora 21<br>Debian 8 |
 
 # Known issues
-## Fullscreen
-If you're trying to click fullscreen on YouTube video, you'll see like this ![image](https://user-images.githubusercontent.com/43247023/147974115-9eda335e-bc1f-43b8-b064-228753304c2f.png)
-This is an issue due to web contents and navigator bar being separated which have the same behavour.
-
 ## Some buttons in "More" context menu doesn't work!
 Still working in progress.
 

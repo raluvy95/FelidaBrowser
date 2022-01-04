@@ -259,7 +259,20 @@ class FelidaBrowser {
 			dts[id].favicons = newTab.favicons;
 			return dts
 		}
-
+		
+		// fullscreen fix
+		newTab.webContents.on('enter-html-full-screen', (event) => {
+			this.mainWindow.removeBrowserView(this.etabsView);
+			
+			let size = this.mainWindow.getSize();
+			this.tabs[this.activeTab].setBounds({ x: 0, y: 0, width: size[0], height: size[1] });
+		})
+		
+		newTab.webContents.on('leave-html-full-screen', (event) => {
+			this.mainWindow.addBrowserView(this.etabsView);
+			this.updateSizes();
+		})
+		
 		newTab.webContents.on('page-title-updated', (event, title, explicitSet) => {
 			logger(`Tab ${id} changed title to ${title}`)
 			newTab.title = title

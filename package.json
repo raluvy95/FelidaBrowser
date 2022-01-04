@@ -4,7 +4,8 @@
   "description": "A lightweight chromium browser using Electron.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx electron-packager . --ignore='.gitignore'"
   },
   "author": "raluvy95",
   "dependencies": {
@@ -16,7 +17,6 @@
     "node-fetch": "^2.6.1"
   },
   "type": "commonjs",
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/raluvy95/FelidaBrowser.git"
@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/raluvy95/FelidaBrowser/issues"
   },
-  "homepage": "https://github.com/raluvy95/FelidaBrowser#readme"
+  "homepage": "https://github.com/raluvy95/FelidaBrowser#readme",
+  "devDependencies": {
+    "electron-packager": "^15.4.0"
+  }
 }

@@ -25,7 +25,8 @@
 # Building & installing
 There's no new precompiled build yet, so the only option is to build it yourself.<br><br>
 
-You need to clone this repository, then go to the folder, open in terminal and use `npm i --save`. Finally, run `./run.bat` if you're using Windows, otherwise `run.sh`.
+You need to clone this repository, then go to the folder, open in terminal and use `npm i --save`. Finally, run `./run.bat` if you're using Windows, otherwise `run.sh`.<br>
+Alternatively, use `npm run build` to build a binary version (make sure to have `electron-packager` installed locally)
 
 # System Requirements
 

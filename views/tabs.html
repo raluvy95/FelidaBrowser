@@ -23,6 +23,15 @@
 		let backwardBtn = null;
 
 		let actualURL = '';
+		ipcRenderer.on('ListBookmarks', (event, d) => {
+    		for(const elements of d) {
+				let img = ''
+				if(elements.icon) {
+					img = `<img src=${elements.icon} />`
+				}
+document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elements.url}')" title='${elements.url}'>${img}  ${elements.title}</button>`				
+			}
+		})
 
 		ipcRenderer.on('setSelectedTab', (event, tabId) => {
 			selectedTab = tabId;
@@ -45,6 +54,7 @@
 		})
 
 		window.addEventListener('DOMContentLoaded', (event) => {
+			ipcRenderer.send("getListBookmarks")
 			URLInput = document.getElementById('URLInput');
 			TabsDiv = document.getElementById('tabs');
 			forwardBtn = document.getElementById("navFwd");
@@ -256,6 +266,11 @@
 				URLInput.value = url;
 			}
 		}
+
+		function goURL(url) {
+			ipcRenderer.send("goURL", url)
+		}
+
 		function moremenu() { ipcRenderer.send("moremenu") }
 		setInterval(updateURL, 100)
 	</script>
@@ -296,7 +311,6 @@
 	</div>
 	
 	<div id="bookmarks" class="bookmarks">
-		<button onclick="ipcRenderer.send('goURL', 'https://youtube.com');">Test bookmark</button>
 	</div>
 
 	</div>

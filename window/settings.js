@@ -4,7 +4,7 @@ if (process.argv.includes('--log')) { logger = require('../logger.js').log; } el
 const fs = require('fs')
 
 function data() {
-	try { return JSON.parse(fs.readFileSync(__dirname + '/settings.json', 'utf8')) } catch (e) { return {} }
+	try { return JSON.parse(fs.readFileSync(__dirname + '/../data/settings.json', 'utf8')) } catch (e) { return {} }
 }
 
 function open(top) {
@@ -35,7 +35,7 @@ function open(top) {
 	})
 
 	ipcMain.once('updatesettings', (event, d) => {
-		fs.writeFile(__dirname + '/settings.json', JSON.stringify(d), function (err) {
+		fs.writeFile(__dirname + '/../data/settings.json', JSON.stringify(d), function (err) {
 			if (err) return logger(err);
 			logger('Saved!')
 		});

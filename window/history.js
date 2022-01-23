@@ -20,7 +20,7 @@ const history = (top) => {
 	win.resizable = true;
 
 	ipcMain.on('historydata', (event) => {
-		fs.readFile('./history.json', 'utf8', function (err, data) {
+		fs.readFile('./../data/history.json', 'utf8', function (err, data) {
 			if(err)
 			{
 				return console.log(err);

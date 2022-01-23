@@ -1,5 +1,4 @@
 node_modules/
 package-lock.json
-history.json
+data/
 engine.bin
-settings.json

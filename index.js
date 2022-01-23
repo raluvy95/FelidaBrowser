@@ -19,6 +19,8 @@ const about = require('./window/about.js')
 const settings = require('./window/settings.js')
 const history = require('./window/history.js')
 const moremenu = require('./window/moremenu.js')
+const bookmark = require('./window/bookmark.js')
+
 let browserSettings = settings.data()
 
 class FelidaBrowser {
@@ -61,7 +63,7 @@ class FelidaBrowser {
 			icon: './assets/icon.png',
 			show: false,
 		});
-
+		  
 		this.mainWindow.once("ready-to-show", () => {
 			this.mainWindow.show()
 			this.mainWindow.focus()
@@ -102,10 +104,12 @@ class FelidaBrowser {
 		this.mainWindow.on('settings', () => { this.settings() })
 		this.mainWindow.on('history', () => { this.history() })
 		this.mainWindow.on('moremenu', (event) => { this.moremenu() })
+		this.mainWindow.on('bookmark', (event) => { this.bookmark() })
 		ipcMain.on('about', (event) => { this.about() })
 		ipcMain.on('settings', (event) => { this.settings() })
 		ipcMain.on('history', (event) => { this.history() })
 		ipcMain.on('moremenu', (event) => { this.moremenu() })
+		ipcMain.on('bookmark', (event) => { this.bookmark() })
 
 		ipcMain.on('updatesettings', (event, d) => {
 			browserSettings = d
@@ -189,6 +193,50 @@ class FelidaBrowser {
 
 		})
 
+		ipcMain.on("getListBookmarks", (event) => {
+			let parsed
+			if (fs.existsSync('./data/bookmarks.json')) {
+				parsed = JSON.parse(fs.readFileSync("./data/bookmarks.json"))
+			} else {
+				parsed = [
+					{
+						title: "YouTube",
+						icon: "https://www.youtube.com/s/desktop/40777624/img/favicon.ico",
+						url: "https://youtube.com"
+					},
+					{
+						title: "GitHub",
+						icon: "https://github.githubassets.com/favicons/favicon-dark.png",
+						url: "https://github.com"
+					},
+					{
+						title: "Felida Browser",
+						icon: "file:///home/raluca/Desktop/devs/FelidaBrowser/assets/icon.png",
+						url: "https://github.com/raluvy95/FelidaBrowser"
+					},
+					{
+						title: "Twitter",
+						icon: "https://abs.twimg.com/favicons/twitter.2.ico",
+						url: "https://twitter.com"
+					},
+					{
+						title: "Facebook",
+						icon: "https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico",
+						url: "https://facebook.com"
+					},
+					{
+						title: "Reddit",
+						icon: "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+						url: "https://reddit.com"
+					}
+				]
+				fs.appendFileSync('./data/bookmarks.json', JSON.stringify(parsed))
+			}
+			logger(parsed)
+			event.reply("ListBookmarks", parsed)
+		
+		})
+
 		ipcMain.on("quit", event => {
 			this.close()
 		})
@@ -217,6 +265,11 @@ class FelidaBrowser {
 		moremenu(this.mainWindow)
 	}
 
+	bookmark() {
+		logger("Opening bookmark page")
+		bookmark(this.mainWindow)
+	}
+
 	goURL(url) // on active tab
 	{
 		logger(`Moving tab ${this.activeTab} from ${this.tabs[this.activeTab].webContents.getURL()} to ${url}`)
@@ -227,7 +280,7 @@ class FelidaBrowser {
 		this.updateSizes();
 
 		// log to history
-		fs.appendFile(`./history.json`, `${Date.now()}\r\n${this.tabs[this.activeTab].webContents.getTitle()}\r\n${url}\r\n`, function (err) {
+		fs.appendFile(`./data/history.json`, `${Date.now()}\r\n${this.tabs[this.activeTab].webContents.getTitle()}\r\n${url}\r\n`, function (err) {
 			if (err) throw err;
 		});
 	}
@@ -252,14 +305,13 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1]});
 		newTab.webContents.loadFile('views/index.html')
-
 		function updateData(dts) {
 			if (dts[id] == null) dts[id] = {}
 			dts[id].title = newTab.title;
 			dts[id].favicons = newTab.favicons;
 			return dts
 		}
-		
+
 		// fullscreen fix
 		newTab.webContents.on('enter-html-full-screen', (event) => {
 			this.mainWindow.removeBrowserView(this.etabsView);
@@ -276,6 +328,7 @@ class FelidaBrowser {
 		newTab.webContents.on('page-title-updated', (event, title, explicitSet) => {
 			logger(`Tab ${id} changed title to ${title}`)
 			newTab.title = title
+			this.mainWindow.setTitle(title + " | Felida Browser")
 			this.dataToSend = updateData(this.dataToSend)
 		})
 
@@ -328,13 +381,17 @@ class FelidaBrowser {
 
 		this.tabs[id] = newTab
 		this.updateSizes();
+		/*
+		  For some reasons, this context menu didn't work
+		  since it tries to call <object>.isDestroyed() which doesn't exist
 		contextMenu({
 			window: newTab,
 			showCopyImage: true,
 			showCopyImageAddress: true,
 			showSaveImageAs: true,
 			showSearchWithGoogle: true
-		});
+		})();
+		*/
 
 		return (id);
 	}

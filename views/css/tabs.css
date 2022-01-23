@@ -89,17 +89,24 @@ input:focus {
 }
 
 .bookmarks button {
+	cursor: pointer;
+	padding: 3px 8px;
 	text-decoration: none;
 	margin: 3px;
 	border: none;
 	outline: none;
-	background-color: rgb(46, 46, 46);
+	background-color: rgb(19, 19, 19);
 	color: rgb(207, 207, 207);
-	border-radius: 5px;
+	border-radius: 15px;
 	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-	transition: background-color 0.6s;
+	transition: background-color 0.3s;
 }
 
 .bookmarks button:hover {
-	background-color: rgb(92, 92, 92);
+	background-color: rgb(43, 43, 43);
+}
+
+.bookmarks img {
+	height: 13px;
+	width: auto;
 }

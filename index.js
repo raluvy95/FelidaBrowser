@@ -305,6 +305,7 @@ class FelidaBrowser {
 		let size = this.mainWindow.getSize();
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1]});
 		newTab.webContents.loadFile('views/index.html')
+
 		function updateData(dts) {
 			if (dts[id] == null) dts[id] = {}
 			dts[id].title = newTab.title;

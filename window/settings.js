@@ -4,7 +4,11 @@ if (process.argv.includes('--log')) { logger = require('../logger.js').log; } el
 const fs = require('fs')
 
 function data() {
-	try { return JSON.parse(fs.readFileSync(__dirname + '/../data/settings.json', 'utf8')) } catch (e) { return {} }
+	try { 
+		return JSON.parse(fs.readFileSync(__dirname + '/../data/settings.json', 'utf8'))
+	} catch (e) { 
+		return {} 
+	}
 }
 
 function open(top) {

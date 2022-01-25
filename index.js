@@ -9,7 +9,7 @@ if (process.argv.includes('--log')) { logger = require('./logger.js').log; } els
 let blocker = null
 
 console.log('Loading libraries...')
-const { BrowserWindow, BrowserView, app, ipcMain, Menu, session } = require('electron')
+const { BrowserWindow, BrowserView, app, ipcMain, Menu, session} = require('electron')
 const { ElectronBlocker, fullLists, Request } = require("@cliqz/adblocker-electron")
 const fetch = require("node-fetch")
 const { promises } = require('fs');
@@ -20,6 +20,48 @@ const settings = require('./window/settings.js')
 const history = require('./window/history.js')
 const moremenu = require('./window/moremenu.js')
 const bookmark = require('./window/bookmark.js')
+
+const BOOKMARKS_TEMPLATE = [
+	{
+		title: "YouTube",
+		icon: "https://www.youtube.com/s/desktop/40777624/img/favicon.ico",
+		url: "https://youtube.com"
+	},
+	{
+		title: "GitHub",
+		icon: "https://github.githubassets.com/favicons/favicon-dark.png",
+		url: "https://github.com"
+	},
+	{
+		title: "Felida Browser",
+		icon: "file:///home/raluca/Desktop/devs/FelidaBrowser/assets/icon.png",
+		url: "https://github.com/raluvy95/FelidaBrowser"
+	},
+	{
+		title: "Twitter",
+		icon: "https://abs.twimg.com/favicons/twitter.2.ico",
+		url: "https://twitter.com"
+	},
+	{
+		title: "Facebook",
+		icon: "https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico",
+		url: "https://facebook.com"
+	},
+	{
+		title: "Reddit",
+		icon: "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+		url: "https://reddit.com"
+	}
+]
+
+if(!fs.existsSync(__dirname + '/data/')) {
+	// this will create necessary files upon first run
+	fs.mkdirSync(__dirname + '/data/')
+	fs.appendFileSync(__dirname + '/data/settings.json', '{}')
+	fs.appendFileSync(__dirname + '/data/bookmarks.json', JSON.stringify(BOOKMARKS_TEMPLATE))
+	fs.appendFileSync(__dirname + '/data/history.json', '')
+}
+
 
 let browserSettings = settings.data()
 
@@ -146,9 +188,10 @@ class FelidaBrowser {
 		})
 
 
-		ipcMain.on('newTab', (event) => {
+		ipcMain.on('newTab', (event, url) => {
 			this.updateSizes();
-			event.returnValue = this.newTab();
+			if(!url) url = `file:///${__dirname}/views/index.html`
+			event.returnValue = this.newTab(url);
 		})
 		ipcMain.on('goBack', (event) => {
 			this.updateSizes();
@@ -198,43 +241,32 @@ class FelidaBrowser {
 			if (fs.existsSync('./data/bookmarks.json')) {
 				parsed = JSON.parse(fs.readFileSync("./data/bookmarks.json"))
 			} else {
-				parsed = [
-					{
-						title: "YouTube",
-						icon: "https://www.youtube.com/s/desktop/40777624/img/favicon.ico",
-						url: "https://youtube.com"
-					},
-					{
-						title: "GitHub",
-						icon: "https://github.githubassets.com/favicons/favicon-dark.png",
-						url: "https://github.com"
-					},
-					{
-						title: "Felida Browser",
-						icon: "file:///home/raluca/Desktop/devs/FelidaBrowser/assets/icon.png",
-						url: "https://github.com/raluvy95/FelidaBrowser"
-					},
-					{
-						title: "Twitter",
-						icon: "https://abs.twimg.com/favicons/twitter.2.ico",
-						url: "https://twitter.com"
-					},
-					{
-						title: "Facebook",
-						icon: "https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico",
-						url: "https://facebook.com"
-					},
-					{
-						title: "Reddit",
-						icon: "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
-						url: "https://reddit.com"
-					}
-				]
+				parsed = BOOKMARKS_TEMPLATE
 				fs.appendFileSync('./data/bookmarks.json', JSON.stringify(parsed))
 			}
 			logger(parsed)
-			event.reply("ListBookmarks", parsed)
+			event.returnValue = parsed
 		
+		})
+
+		ipcMain.on('setListBookmarks', (event, type, value='') => {
+			const parsed = JSON.parse(fs.readFileSync("./data/bookmarks.json"))
+			switch(type) {
+				case 'purge':
+					fs.writeFileSync('./data/bookmarks.json', '[]')
+					break
+				case 'change':
+					fs.writeFileSync('./data/bookmarks.json', JSON.stringify(value))
+					break
+				case 'add':
+					parsed.push(value)
+					fs.writeFileSync('./data/bookmarks.json', JSON.stringify(parsed))
+					break
+				case 'remove':
+					parsed.splice(parsed.findIndex(m => m.url == value), 1)
+					fs.writeFileSync('./data/bookmarks.json', JSON.stringify(parsed))
+					break
+			}
 		})
 
 		ipcMain.on("quit", event => {
@@ -293,7 +325,7 @@ class FelidaBrowser {
 		}
 	}
 
-	newTab() {
+	newTab(url=`file:///${__dirname}/views/index.html`) {
 		let id = Date.now()
 		logger(`New tab, id: ${id}`)
 		let newTab = new BrowserView({
@@ -304,7 +336,7 @@ class FelidaBrowser {
 		});
 		let size = this.mainWindow.getSize();
 		newTab.setBounds({ x: 0, y: 100, width: size[0], height: size[1]});
-		newTab.webContents.loadFile('views/index.html')
+		newTab.webContents.loadURL(url)
 
 		function updateData(dts) {
 			if (dts[id] == null) dts[id] = {}
@@ -378,6 +410,19 @@ class FelidaBrowser {
 			newTab.ID = null
 			this.dataToSend = updateData(this.dataToSend)
 		})
+		
+        /* this thing crashed
+		newTab.webContents.setWindowOpenHandler((el) => {
+			switch(el.disposition) {
+				case 'save-to-disk':
+					// this goes to Downloads related
+					break
+				default:
+					ipcRenderer.send("triggerNewTab", el.url)
+				    break
+			}
+		})
+		*/
 
 
 		this.tabs[id] = newTab

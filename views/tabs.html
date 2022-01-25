@@ -23,19 +23,24 @@
 		let backwardBtn = null;
 
 		let actualURL = '';
-		ipcRenderer.on('ListBookmarks', (event, d) => {
-    		for(const elements of d) {
+		function showBookmarks() {
+			const listBookmarks = ipcRenderer.sendSync("getListBookmarks")
+			for (const elements of listBookmarks) {
 				let img = ''
-				if(elements.icon) {
+				if (elements.icon) {
 					img = `<img src=${elements.icon} />`
 				}
-document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elements.url}')" title='${elements.url}'>${img}  ${elements.title}</button>`				
+				document.getElementById('bookmarks').innerHTML += `<button onclick="goURL('${elements.url}')" title='${elements.url}'>${img}  ${elements.title}</button>`
 			}
-		})
+		}
 
 		ipcRenderer.on('setSelectedTab', (event, tabId) => {
 			selectedTab = tabId;
 			if (document.getElementById(tabId) != null) { chromeTabs.setCurrentTab(document.getElementById(tabId)) }
+		})
+
+		ipcRenderer.on("triggerNewTab", (event, url) => {
+			newTab(url)
 		})
 
 		ipcRenderer.on('newURL', (event, tabId, newURL) => {
@@ -54,7 +59,7 @@ document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elem
 		})
 
 		window.addEventListener('DOMContentLoaded', (event) => {
-			ipcRenderer.send("getListBookmarks")
+			showBookmarks()
 			URLInput = document.getElementById('URLInput');
 			TabsDiv = document.getElementById('tabs');
 			forwardBtn = document.getElementById("navFwd");
@@ -65,19 +70,19 @@ document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elem
 			switch (defEngine1) {
 				case 'google':
 					placeholder = "Google"
-						break;
-					case 'ddg':
-						placeholder = "DuckDuckGo"
-						break;
-					case 'bing':
-						placeholder = "Bing"
-						break;
-					case 'yahoo':
-						placeholder = "Yahoo"
-						break;
-					default:
-						placeholder = "Google"
-						break;
+					break;
+				case 'ddg':
+					placeholder = "DuckDuckGo"
+					break;
+				case 'bing':
+					placeholder = "Bing"
+					break;
+				case 'yahoo':
+					placeholder = "Yahoo"
+					break;
+				default:
+					placeholder = "Google"
+					break;
 			}
 			const getPlaceholder = URLInput.getAttribute("placeholder")
 			URLInput.setAttribute("placeholder", getPlaceholder.replace("{search}", placeholder))
@@ -132,7 +137,7 @@ document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elem
 			})
 			el.addEventListener('tabRemove', ({ detail }) => { closeTab(detail.tabEl.id) })
 			newTab()
-			
+
 			function checkData() {
 				let data = ipcRenderer.sendSync('checkData')
 				if (data != null) {
@@ -163,7 +168,7 @@ document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elem
 							/*
 							TODO: Add another animated favicon for waiting for response.
 							case 'isConnecting':
-							    const ID = Object.keys(data).filter(m => !isNaN(m))
+								const ID = Object.keys(data).filter(m => !isNaN(m))
 								const stillConnecting = document.getElementById(ID)
 								if(stillConnecting == null) break;
 								const isSameIcon = stillConnecting.querySelector(".chrome-tab-favicon").getAttribute("style").toString()
@@ -241,8 +246,8 @@ document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elem
 			document.getElementById("tabs").appendChild(coxMenu)
 			return false;
 		}*/
-		function newTab() {
-			let id = ipcRenderer.sendSync('newTab')
+		function newTab(url) {
+			let id = ipcRenderer.sendSync('newTab', url)
 
 			waitingID = id // We let know, so whenever tabAdd event will be fired (that means tab was created proparly) we set it ID
 			chromeTabs.addTab({
@@ -309,7 +314,7 @@ document.getElementById('bookmarks').innerHTML+= `<button onclick="goURL('${elem
 		</button>
 		<!-- this will have adblock button -->
 	</div>
-	
+
 	<div id="bookmarks" class="bookmarks">
 	</div>
 

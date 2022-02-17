@@ -1,4 +1,4 @@
-<p align="center"><img width="250" height="250" src="./assets/icon.png" alt="Felida icon"></p>
+<p align="center"><img width="250" height="250" src="./assets/mascot.svg" alt="Felida icon"></p>
 <h1 align="center">Felida Browser</h1>
 <p align="center">
   <a href="https://opensource.org/licenses/"><img alt="GPLv3 License" src="https://img.shields.io/badge/License-GPL%20v3-yellow.svg"></a>

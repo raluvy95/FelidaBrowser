@@ -46,5 +46,5 @@ It's not an issue because the adblock plugin is doing its job to block tracking/
 
 # Notes
 
-This browser is in BETA. If you found a bug in the browser feel free to fill a new issue! 
+This browser is in BETA. If you found a bug in the browser feel free to submit a new issue! 
 

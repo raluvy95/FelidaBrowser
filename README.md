@@ -17,7 +17,7 @@
 # TODO
   - Browsing history (small bug currently)
   - Chrome extensions
-  - Black theme on all websites
+  - Dark theme on all websites
   - Bookmarks
   - Fully customizable
     - For example: Custom Background, CSS, Menu bar and much more.

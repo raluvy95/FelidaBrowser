@@ -1,6 +1,6 @@
 {
   "name": "felida",
-  "version": "1.0.0",
+  "version": "0.2.3",
   "description": "A lightweight chromium browser using Electron.js",
   "main": "index.js",
   "scripts": {

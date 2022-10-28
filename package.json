@@ -5,15 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx electron-packager . --ignore='.gitignore'"
+    "build": "npx electron-packager . felida --icon ./assets/icon.png  --out ./build --ignore='\\.gitignore'",
+    "watch": "nodemon -i ./data --exec ./run.sh"
   },
   "author": "raluvy95",
   "dependencies": {
-    "@cliqz/adblocker-electron": "^1.23.2",
+    "@cliqz/adblocker-electron": "^1.25.1",
     "draggabilly": "^3.0.0",
-    "electron": "^16.0.0",
-    "electron-context-menu": "^3.1.1",
-    "jquery": "^3.6.0",
+    "electron": "^21.2.0",
+    "electron-context-menu": "^3.6.0",
+    "jquery": "^3.6.1",
     "node-fetch": "^2.6.1"
   },
   "type": "commonjs",
@@ -27,6 +28,7 @@
   },
   "homepage": "https://github.com/raluvy95/FelidaBrowser#readme",
   "devDependencies": {
-    "electron-packager": "^15.4.0"
+    "electron-packager": "^17.0.0",
+    "nodemon": "^2.0.20"
   }
 }

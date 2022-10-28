@@ -3,6 +3,10 @@ if (process.argv.includes('--help')) {
 	process.exit()
 }
 
+// process.on('unhandledRejection', error => {
+// 	console.log('unhandledRejection', error.message);
+// });
+
 let logger = null
 if (process.argv.includes('--log')) { logger = require('./logger.js').log; } else { logger = require('./logger.js').nolog; }
 
@@ -11,7 +15,6 @@ let blocker = null
 console.log('Loading libraries...')
 const { BrowserWindow, BrowserView, app, ipcMain, Menu, session} = require('electron')
 const { ElectronBlocker, fullLists, Request } = require("@cliqz/adblocker-electron")
-const fetch = require("node-fetch")
 const { promises } = require('fs');
 const fs = require("fs")
 const contextMenu = require('electron-context-menu');
@@ -20,6 +23,7 @@ const settings = require('./window/settings.js')
 const history = require('./window/history.js')
 const moremenu = require('./window/moremenu.js')
 const bookmark = require('./window/bookmark.js')
+const fetch = require("node-fetch")
 
 const BOOKMARKS_TEMPLATE = [
 	{
@@ -54,6 +58,7 @@ const BOOKMARKS_TEMPLATE = [
 	}
 ]
 
+console.log(__dirname)
 if(!fs.existsSync(__dirname + '/data/')) {
 	// this will create necessary files upon first run
 	fs.mkdirSync(__dirname + '/data/')
@@ -114,6 +119,7 @@ class FelidaBrowser {
 
 		// Remove menu
 		Menu.setApplicationMenu(null)
+		this.mainWindow.setMenu(null)
 
 		// Create etabsView for tabs
 
@@ -238,11 +244,11 @@ class FelidaBrowser {
 
 		ipcMain.on("getListBookmarks", (event) => {
 			let parsed
-			if (fs.existsSync('./data/bookmarks.json')) {
-				parsed = JSON.parse(fs.readFileSync("./data/bookmarks.json"))
+			if (fs.existsSync(__dirname + '/data/bookmarks.json')) {
+				parsed = JSON.parse(fs.readFileSync(__dirname + '/data/bookmarks.json'))
 			} else {
 				parsed = BOOKMARKS_TEMPLATE
-				fs.appendFileSync('./data/bookmarks.json', JSON.stringify(parsed))
+				fs.appendFileSync(__dirname + '/data/bookmarks.json', JSON.stringify(parsed))
 			}
 			logger(parsed)
 			event.returnValue = parsed
@@ -250,21 +256,21 @@ class FelidaBrowser {
 		})
 
 		ipcMain.on('setListBookmarks', (event, type, value='') => {
-			const parsed = JSON.parse(fs.readFileSync("./data/bookmarks.json"))
+			const parsed = JSON.parse(fs.readFileSync(__dirname + "/data/bookmarks.json"))
 			switch(type) {
 				case 'purge':
-					fs.writeFileSync('./data/bookmarks.json', '[]')
+					fs.writeFileSync(__dirname + '/data/bookmarks.json', '[]')
 					break
 				case 'change':
-					fs.writeFileSync('./data/bookmarks.json', JSON.stringify(value))
+					fs.writeFileSync(__dirname + '/data/bookmarks.json', JSON.stringify(value))
 					break
 				case 'add':
 					parsed.push(value)
-					fs.writeFileSync('./data/bookmarks.json', JSON.stringify(parsed))
+					fs.writeFileSync(__dirname + '/data/bookmarks.json', JSON.stringify(parsed))
 					break
 				case 'remove':
 					parsed.splice(parsed.findIndex(m => m.url == value), 1)
-					fs.writeFileSync('./data/bookmarks.json', JSON.stringify(parsed))
+					fs.writeFileSync(__dirname + '/data/bookmarks.json', JSON.stringify(parsed))
 					break
 			}
 		})
@@ -312,14 +318,14 @@ class FelidaBrowser {
 		this.updateSizes();
 
 		// log to history
-		fs.appendFile(`./data/history.json`, `${Date.now()}\r\n${this.tabs[this.activeTab].webContents.getTitle()}\r\n${url}\r\n`, function (err) {
+		fs.appendFile(`${__dirname}/data/history.json`, `${Date.now()}\r\n${this.tabs[this.activeTab].webContents.getTitle()}\r\n${url}\r\n`, function (err) {
 			if (err) throw err;
 		});
 	}
 
 	updateSizes() {
 		let size = this.mainWindow.getSize();
-		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 110 });
+		this.etabsView.setBounds({ x: 0, y: 0, width: size[0], height: 120 });
 		if (this.activeTab > -1) {
 			this.tabs[this.activeTab].setBounds({ x: 0, y: 110, width: size[0], height: size[1] - 110 });
 		}

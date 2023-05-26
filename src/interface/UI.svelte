@@ -1,7 +1,16 @@
+<script lang="ts" module="mjs">
+    const { ipcRenderer } = window.require("electron");
+
+    function close() {
+        ipcRenderer.send("close");
+    }
+</script>
+
 <p>
-    wjiopew9pf9hwpc9wfht537-7vnt39mctw9j5tp9cfpocrfo;jicwropmicqrco;iwrc sex ses
-    swefidrpwefr3of
+    TEST
+    UIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 </p>
+<button on:click={close}>x</button>
 
 <style>
     :global(body) {

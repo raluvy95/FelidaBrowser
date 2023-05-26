@@ -1,21 +1,41 @@
 {
   "name": "felida",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A lightweight chromium browser using Electron.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx electron-packager . felida --icon ./assets/icon.png  --out ./build --ignore='\\.gitignore'",
+    "build": "npx electron-builder -wl",
     "watch": "nodemon -i ./data --exec ./run.sh"
   },
   "author": "raluvy95",
   "dependencies": {
-    "@cliqz/adblocker-electron": "^1.25.1",
+    "@cliqz/adblocker-electron": "^1.26.5",
     "draggabilly": "^3.0.0",
-    "electron": "^21.2.0",
-    "electron-context-menu": "^3.6.0",
-    "jquery": "^3.6.1",
+    "electron-context-menu": "^3.6.1",
+    "jquery": "^3.7.0",
     "node-fetch": "^2.6.1"
+  },
+  "build": {
+    "appId": "net.raluvy95.felida",
+    "productName": "Felida Browser",
+    "copyright": "Copyright © 2023 raluvy95",
+    "icon": "icon.png",
+    "directories": {
+      "buildResources": "resources",
+      "output": "build"
+    },
+    "win": {
+      "target": "zip",
+      "icon": "icon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Internet",
+      "icon": "icon.png"
+    }
   },
   "type": "commonjs",
   "repository": {
@@ -28,7 +48,9 @@
   },
   "homepage": "https://github.com/raluvy95/FelidaBrowser#readme",
   "devDependencies": {
-    "electron-packager": "^17.0.0",
-    "nodemon": "^2.0.20"
-  }
+    "electron-builder": "^24.4.0",
+    "nodemon": "^2.0.20",
+    "electron": "^24.4.0"
+  },
+  "private": true
 }

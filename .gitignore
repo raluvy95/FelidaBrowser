@@ -3,3 +3,6 @@ package-lock.json
 data/
 engine.bin
 build/
+# Compiled from TypeScript
+compiled-electron/
+compiled-interface/ 

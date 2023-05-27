@@ -1,0 +1,25 @@
+:root {
+    --darkest1: #11111b;
+    --darkest0: #181825;
+    --base: #1e1e2e;
+    --surface0: #313244;
+    --surface1: #45475a;
+    --surface2: #585b70;
+    --overlay0: #6c7086;
+    --overlay1: #7f849c;
+    --overlay2: #9399b2;
+    --subtext0: #a6adc8;
+    --subtext1: #bac2de;
+    --text: #cdd6f4;
+    --accent: #cba6f7;
+    --primary: var(--base);
+    --secondary: var(--surface0);
+    --alert: #f9e2af;
+    --error: #f38ba8;
+    --focus: #89dceb;
+    --hover: var(--surface1)l
+}
+
+body {
+    margin: 0;
+}

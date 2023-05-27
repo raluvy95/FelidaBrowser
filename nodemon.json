@@ -1,0 +1,12 @@
+{
+    "verbose": true,
+    "ignore": [
+        "compiled-electron/*",
+        "compiled-interface/*",
+        "node_modules",
+        "data"
+    ],
+    "execMap": {
+        "js": "npm run compile:interface && npm run start"
+    }
+}

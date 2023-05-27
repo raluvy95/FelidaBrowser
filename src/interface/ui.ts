@@ -1,7 +1,7 @@
-import UI from './UI.svelte'
+import UI from "./mainbrowser/UI.svelte";
 
 const app = new UI({
-    target: document.getElementById('app') as HTMLElement
-})
+    target: document.getElementById("app") as HTMLElement
+});
 
-export default app
+export default app;

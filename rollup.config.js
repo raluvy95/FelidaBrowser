@@ -23,7 +23,7 @@ function config(name) {
             }),
             typescript({
                 tsconfig: "tsconfig.interface.json",
-                sourceMap: true
+                sourceMap: false
             }),
             css({
                 output: `${name}.css`

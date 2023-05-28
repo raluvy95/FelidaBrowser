@@ -16,7 +16,9 @@ export class FelidaUI extends BrowserView {
 
         const URL = `file://${path.join(__dirname, "../public/ui.html")}`;
 
-        this.webContents.loadURL(URL);
+        //this.webContents.loadURL(URL);
+        this.webContents.loadFile(path.join(__dirname, "../public/ui.html"));
+        setTimeout(this.updateSize, 2); // try now doesn't work
 
         log(URL);
 

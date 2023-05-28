@@ -10,7 +10,8 @@
     "start:electron:dev": "DEV=true electron compiled-electron/index.js",
     "start": "npm run start:electron:dev",
     "build": "npx electron-builder -wl",
-    "watch": "nodemon -i ./data --exec npm run compile:electron"
+    "watch": "nodemon -i ./data --exec npm run compile:electron",
+    "lint": "npx eslint 'src/electron'"
   },
   "author": "raluvy95",
   "dependencies": {
@@ -73,6 +74,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-svelte": "^2.29.0",
     "nodemon": "^2.0.20",
     "rimraf": "^5.0.1",
     "rollup": "^3.23.0",

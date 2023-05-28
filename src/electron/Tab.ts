@@ -36,12 +36,18 @@ export class FelidaTab extends BrowserView {
             }, 300);
         });
 
-        this.updateSize();
+        this.webContents.on("did-finish-load", () => {
+            this.setAutoResize({
+                vertical: true,
+                horizontal: true
+            });
+            setTimeout(this.updateSize, 2);
+        });
     };
 
-    public updateSize = () => {
-        const size = this.parent.getSize();
-        console.log(size);
-        this.setBounds({ x: 0, y: 90, width: size[0], height: size[1] - 80 });
+    private updateSize = () => {
+        const b = this.parent.getBounds();
+        console.log(b);
+        this.setBounds({ x: 0, y: 90, width: b.width, height: b.height - 80 });
     };
 }

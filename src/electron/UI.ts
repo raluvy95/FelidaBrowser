@@ -1,4 +1,6 @@
 import { BrowserView, BrowserWindow, ipcMain } from "electron";
+import { log } from "./logger";
+import path from "path";
 
 export class FelidaUI extends BrowserView {
     private parent: BrowserWindow;
@@ -12,9 +14,14 @@ export class FelidaUI extends BrowserView {
 
         this.parent = parent;
 
-        this.webContents.loadURL(`file://${__dirname}/../public/ui.html`);
+        const URL = `file://${path.join(__dirname, "../public/ui.html")}`;
+
+        this.webContents.loadURL(URL);
+
+        log(URL);
 
         this.parent.on("resize", () => {
+            console.log("resize");
             this.updateSize();
         });
 
@@ -24,18 +31,25 @@ export class FelidaUI extends BrowserView {
 
         this.parent.on("maximize", () => {
             // without timeout it would do nothing
-            setTimeout(() => {
-                this.updateSize();
-            }, 300);
+            console.log("maximize");
+            setTimeout(this.updateSize, 2);
         });
 
         ipcMain.on("close", () => {
             console.log("ye it works idk");
             this.parent.close();
         });
+
+        this.webContents.on("did-finish-load", () => {
+            this.setAutoResize({
+                vertical: true,
+                horizontal: true
+            });
+            setTimeout(this.updateSize, 2);
+        });
     }
     private updateSize = () => {
-        const size = this.parent.getSize();
-        this.setBounds({ x: 0, y: 0, width: size[0], height: 90 });
+        const b = this.parent.getBounds();
+        this.setBounds({ x: 0, y: 0, width: b.width, height: b.height - 100 });
     };
 }

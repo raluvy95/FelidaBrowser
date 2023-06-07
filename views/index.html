@@ -9,16 +9,38 @@
 
 <body>
     <div id="nav-head"></div>
+    <div class="section">
+        <div id="clock"></div>
+        <div id="items">
+            <a href="https://www.youtube.com" class="item">YouTube</a>
+            <a href="https://www.twitter.com" class="item">Twitter</a>
+        </div>
+    </div>
     <h1>Felida Browser</h1>
     <p>Welcome to the browser!</p>
     <img src="./../assets/icon.png" width="200px" height="200px" class="cool" id="XD"><br><br>
     <input id="search" type="text" placeholder="Search with DuckDuckGo"><br><br>
     <p>Felida Browser is a lightweight Chromium browser using <a href="https://electronjs.org">ElectronJS</a></p>
     <p>Made by <a href="https://youtube.com/catnowblue">CatNowBlue</a> and <a
-        href="https://github.com/raluvy95/felidabrowser">the contributors</a>!
+            href="https://github.com/raluvy95/felidabrowser">the contributors</a>!
     <p>
 </body>
 <script>
+    function updateClock() {
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
+        var timeString = hours + ":" + formatTimeComponent(minutes) + ":" + formatTimeComponent(seconds);
+        document.getElementById("clock").textContent = timeString;
+    }
+
+    function formatTimeComponent(time) {
+        return time < 10 ? "0" + time : time;
+    }
+
+    setInterval(updateClock, 1000);
+
     document.getElementById("search").addEventListener("keypress", (event) => {
         if (event.keyCode === 13) {
             const query = document.getElementById("search")
@@ -30,9 +52,9 @@
     }
     document.getElementById("XD").addEventListener("click", () => {
         let randInt = Math.floor(Math.random() * 4)
-        if(randInt == 0) {
+        if (randInt == 0) {
             randInt = ''
-        } else if(randInt == 4) {
+        } else if (randInt == 4) {
             randInt = ''
         }
         document.getElementsByTagName("body")[0].style.backgroundImage = `url("./../assets/defbg${randInt}.png")`

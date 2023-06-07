@@ -3,3 +3,5 @@ package-lock.json
 data/
 engine.bin
 build/
+
+compiled-*

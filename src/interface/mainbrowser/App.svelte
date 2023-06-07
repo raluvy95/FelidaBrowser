@@ -5,6 +5,7 @@
 <style>
     :global(body) {
         height: 100%;
+        width: 100%;
         margin: 0;
         background-repeat: no-repeat;
         background-attachment: fixed;

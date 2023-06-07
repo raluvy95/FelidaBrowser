@@ -26,7 +26,9 @@
     },
     "ignorePatterns": [
         "*.json",
-        "*.scss"
+        "*.scss",
+        "node_modules",
+        "compiled-*"
     ],
     "plugins": [
         "@typescript-eslint"

@@ -1,17 +1,25 @@
 <script lang="ts" module="mjs">
-    // @ts-ignore
-    const { ipcRenderer } = window.require("electron");
-
-    function close() {
-        ipcRenderer.send("close");
-    }
+    import TitleButtons from "./TitleButtons.svelte";
 </script>
 
-<p>click this to close</p>
-<button on:click={close}>x</button>
+<div class="UI">
+    <div class="tabs" />
+    <div class="buttons">
+        <TitleButtons />
+    </div>
+</div>
 
-<style>
+<style lang="scss">
+    .UI {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .buttons {
+        display: flex;
+    }
     :global(body) {
-        background-color: var(--background);
+        background-color: var(--base);
     }
 </style>

@@ -24,6 +24,8 @@ export class FelidaBrowser extends BrowserWindow {
         log(__dirname);
         this.ui = new FelidaUI(this);
 
+        this.addBrowserView(this.ui);
+
         this.newTab();
     }
 

@@ -47,7 +47,6 @@ export class FelidaTab extends BrowserView {
 
     private updateSize = () => {
         const b = this.parent.getBounds();
-        console.log(b);
         this.setBounds({ x: 0, y: 90, width: b.width, height: b.height - 80 });
     };
 }

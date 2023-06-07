@@ -1,5 +1,4 @@
 import { BrowserView, BrowserWindow, ipcMain } from "electron";
-import { log } from "./logger";
 import path from "path";
 
 export class FelidaUI extends BrowserView {
@@ -14,39 +13,28 @@ export class FelidaUI extends BrowserView {
 
         this.parent = parent;
 
-        const URL = `file://${path.join(__dirname, "../public/ui.html")}`;
-
-        //this.webContents.loadURL(URL);
         this.webContents.loadFile(path.join(__dirname, "../public/ui.html"));
-        setTimeout(this.updateSize, 2); // try now doesn't work
+        setTimeout(this.updateSize, 2);
 
-        log(URL);
+        this.parent.on("resize", this.updateSize);
 
-        this.parent.on("resize", () => {
-            console.log("resize");
-            this.updateSize();
-        });
-
-        this.webContents.openDevTools({
-            mode: "undocked"
-        });
+        this.webContents.openDevTools({ mode: "undocked" });
 
         this.parent.on("maximize", () => {
-            // without timeout it would do nothing
-            console.log("maximize");
             setTimeout(this.updateSize, 2);
         });
 
-        ipcMain.on("close", () => {
-            console.log("ye it works idk");
-            this.parent.close();
+        ipcMain.on("close", () => { this.parent.close(); });
+        ipcMain.on("maximize", () => {
+            if (this.parent.isMaximized()) {
+                this.parent.restore();
+            } else {
+                this.parent.maximize();
+            }
         });
+        ipcMain.on("minimize", () => { this.parent.minimize(); });
 
         this.webContents.on("did-finish-load", () => {
-            this.setAutoResize({
-                vertical: true,
-                horizontal: true
-            });
             setTimeout(this.updateSize, 2);
         });
     }

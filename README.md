@@ -1,3 +1,6 @@
+# Looking for new maintainers
+I won't add new features or fixes due to complicated technical debt reasons since this project was created with little to zero knowledge and I won't interest in this project. Rewritting this project would take a lot of time. If you wish to maintain further, please contact me from my profile or open new issue with **valid reason**. This project will become archived in approximative 2 years from now until someone becomes new maintainer of this project. 
+
 <p align="center"><img width="250" height="250" src="./assets/mascot.svg" alt="Felida icon"></p>
 <h1 align="center">Felida Browser</h1>
 <p align="center">
